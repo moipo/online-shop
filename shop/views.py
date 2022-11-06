@@ -1,4 +1,5 @@
-from django.shortcuts import render, render
+from django.shortcuts import render, redirect
+from django.forms import inlineformset_factory
 from .forms import *
 from .models import *
 # Create your views here.
@@ -12,11 +13,15 @@ class Shop:
             form = ProductModelForm(request.POST)
             if form.is_valid():
                 product = form.save()
-                redirect(product)
+                return redirect(product)
 
         ctx = {
-        "form" : form
+        "product_form" : form
         }
-        return render(request, "check.html", ctx)
+        return render(request, "index.html", ctx)
+
 
     #def registration
+    # def create_order(request):
+    #     OrderFormSet = inlineformset_factory(Product, Order)
+    #
