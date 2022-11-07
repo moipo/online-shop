@@ -1,6 +1,28 @@
-{%extends 'base.html'%}
+{%extends 'check/base.html'%}
 
 
-{% block index%}
+{% block index %}
+
+{% for pr in products %}
+  {{pr.name}}
+  {{pr.pic}}
+  {{pr.added_at}}
+  {{pr.category}}
+  <a class = "btn btn-primary btn-lg"  href="{%url 'product' pr.slug %}" class = "{{pr.slug}}"></a>
+<hr>
+
+
+{% for pr in products %}
+<script type="text/javascript">
+
+const addToCartBtn = document.querySelector(".{{pr.slug}}")
+
+addToCartBtn.addEventListener("click", (e) =>
+{
+  elem = document.querySelector("")
+})
+
+</script>
+
 
 {% endblock %}

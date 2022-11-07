@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+from time import time
 # Create your models here.
 
 
@@ -15,20 +16,20 @@ class Product(models.Model):
     price = models.IntegerField()
     rating = models.IntegerField()
     pic = models.ImageField(upload_to = "shop/%Y/%m", null = True, blank = True, default = "default_picture.png")
-    added_at = models.DateTimeField(auto_now_add = True, null = True)
+    added_at = models.DateTimeField(verbose_name = "Data of appearance", auto_now_add = True, null = True)
     category = models.CharField(max_length = 100, choices = CATEGORY)
-    slug = models.SlugField()
+    slug = models.SlugField(blank = True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(str(time()) + "-" + self.name)
         super().save(*args, **kwargs)
 
     def __repr__():
         return self.name
 
-    def get_absolute_url(request):
-        return f"products/{self.slug}"
+    def get_absolute_url():
+        return f"product/{self.slug}"
 
 
 
@@ -51,8 +52,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order)
-    product = models.ForeignKey("Product", null = True, blank = True )
+    order = models.ForeignKey(Order, on_delete = models.CASCADE)
+    product = models.ForeignKey("Product", null = True, blank = True, on_delete = models.CASCADE )
     quantity = models.IntegerField()
 
     @property
