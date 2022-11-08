@@ -50,6 +50,9 @@ class Order(models.Model):
         return self.name
 
 
+class Int(models.Model):
+    amount = models.IntegerField
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete = models.CASCADE)

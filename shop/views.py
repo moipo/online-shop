@@ -72,10 +72,15 @@ class Shop:
 
 
 class ProductApi:
-    def add_to_cart(request,*args,**kwargs):
-        quantity = request.GET.get("quantity")
-        print(quantity)
-        data_from_server = "SUCCESS!"
+    def add_to_cart(request):
+        obj = Int.objects.all()[0]:
+        if obj is None:
+            integ = Int()
+            integ.amount = int(request.GET.get("quantity"))
+            integ.save()
+        else:
+            integ.amount += int(request.GET.get("quantity"))
+        data_from_server = integ.amount
         return JsonResponse(
         {
         "data_from_server" : data_from_server,

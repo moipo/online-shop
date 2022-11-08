@@ -3,6 +3,8 @@
 
 {% block index %}
 
+{% include "check/include/cart_header.html"%}
+
 {% for pr in products %}
   {{pr.name}}
   {{pr.pic}}
@@ -17,7 +19,7 @@
 <input type="text" value="12" class = "data_to_send">
 
 
-<script type="text/javascript">
+<script type="text/javascript" defer>
 
 // var addToCartBtn = document.querySelector(".{{pr.slug}}")
 
@@ -38,6 +40,7 @@ for (let i = 0; i < allBtns.length; i++)
         success: async function (response)
         {
           console.log(response.data_from_server)
+          document.querySelector(".amount").textContent = response.data_from_server
         }
       })
 
