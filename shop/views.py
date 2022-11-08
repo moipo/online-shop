@@ -85,20 +85,39 @@ class Shop:
 
 
 class ProductApi:
-    def add_to_cart(request):
-        obj = Int.objects.all()[0]
-        if obj is None:
-            integ = Int()
-            integ.amount = int(request.GET.get("quantity"))
-            integ.save()
-        else:
-            integ.amount += int(request.GET.get("quantity"))
-        data_from_server = integ.amount
-        return JsonResponse(
-        {
-        "data_from_server" : data_from_server,
-        }
-        )
+    def change_cart(request):
+        product_id = request.GET.get("product_id")
+        action = request.GET.get("action")
+        print(product_id, action)
+        user = request.user
+        if request.user.is_authenticated:
+            # create if it doesn't exit + authentication
+            crt = Order.objects.get(customer = user , status = "Cart")
+            order_items = crt.orderitem_set.all()
+            order_item = order_items.filter(product = Product.objects.get(id = product_id))
+            if order_item is None:
+                new_order_item = OrderItem()  #null
+                new_order_item.order = crt
+                new_order_item.product = Product.objects.get(id = product_id)
+                new_order_item.quantity = 1
+                new_order_item.save()
+            else:
+                order_item.quantity += 1
+                order_item.save()
+            total_quantity = sum([ord.quantity for ord in order_items])
+        # obj = Int.objects.all()[0]
+        # if obj is None:
+        #     integ = Int()
+        #     integ.amount = int(request.GET.get("quantity"))
+        #     integ.save()
+        # else:
+        #     integ.amount += int(request.GET.get("quantity"))
+            data_from_server = product_id
+            return JsonResponse(
+            {
+            "total_quantity" : total_quantity,
+            }
+            )
 
 
 

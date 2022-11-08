@@ -39,6 +39,7 @@ class Order(models.Model):
     ("Pending", "Pending"),
     ("Ready", "Ready"),
     ("Delivered", "Delivered"),
+    ("Cart", "Cart"),
     )
 
     date_created = models.DateTimeField(auto_now_add = True)
