@@ -73,13 +73,23 @@ class Shop:
 
 class ProductApi:
     def add_to_cart(request):
-        obj = Int.objects.all()[0]:
-        if obj is None:
-            integ = Int()
-            integ.amount = int(request.GET.get("quantity"))
-            integ.save()
-        else:
-            integ.amount += int(request.GET.get("quantity"))
+        res = None
+        integ = Int.objects.all()[0]
+        # integ.amount += request.GET.get("quantity")
+        # integ.save()
+        # res = integ.amount
+        # print("try worked")
+        # except:
+        #     integ = Int()
+        #     integ.amount = int(request.GET.get("quantity"))
+        #     integ.save()
+        #     res=integ.amount
+        #     print("except worked")
+        print(integ.amount)
+
+        integ.amount += int(request.GET.get("quantity"))
+
+        integ.save()
         data_from_server = integ.amount
         return JsonResponse(
         {

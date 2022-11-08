@@ -51,7 +51,7 @@ class Order(models.Model):
 
 
 class Int(models.Model):
-    amount = models.IntegerField
+    amount = models.IntegerField(null = True)
 
 
 class OrderItem(models.Model):
