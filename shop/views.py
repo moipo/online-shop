@@ -21,9 +21,22 @@ class Shop:
         return render(request, "check/product.html", ctx)
 
 
-    def cart(request):
-        ctx = {}
+
+    def cart(request): # view with all the OrderItems
+
+        if request.user.is_authenticated:
+            user = request.user
+            order, created = Order.objects.get_or_create(customer = user, Delivered = False)
+            order_items = order.orderitem_set.all()
+        else:
+            order_items = []
+
+
+        ctx = {"order_items" : order_items}
         return render(request, "check/cart.html", ctx)
+
+
+
 
     def registration(request):
 
@@ -73,7 +86,7 @@ class Shop:
 
 class ProductApi:
     def add_to_cart(request):
-        obj = Int.objects.all()[0]:
+        obj = Int.objects.all()[0]
         if obj is None:
             integ = Int()
             integ.amount = int(request.GET.get("quantity"))

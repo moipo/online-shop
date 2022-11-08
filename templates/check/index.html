@@ -10,8 +10,8 @@
   {{pr.pic}}
   {{pr.added_at}}
   {{pr.category}}
-  <!-- <a class = "btn btn-primary btn-lg"  href="{%url 'product' pr.slug %}" class = "{{pr.slug}}"></a> -->
-  <h3 class = "btn btn-primary btn-lg {{pr.slug}}" </h3>
+
+  <h3 data-productid = "{{pr.id}}" data-action = "add" class = "btn btn-primary btn-lg"> </h3>
 <hr>
 <br>
 {%endfor%}
@@ -28,21 +28,24 @@ var allBtns = document.querySelectorAll(".btn")
 
 for (let i = 0; i < allBtns.length; i++)
 {
-  allBtns[i].addEventListener("click", (e) =>
+  allBtns[i].addEventListener("click", function (e)
   {
-    console.log(e.target, "was clicked")
-    $.ajax(
-      {
-        url:"/ProductApi/add_to_cart",
-        type: "get",
-
-        data: {"quantity":$(".data_to_send").val(), csrfmiddlewaretoken: '{{ csrf_token }}'},
-        success: async function (response)
-        {
-          console.log(response.data_from_server)
-          document.querySelector(".amount").textContent = response.data_from_server
-        }
-      })
+    var productid = this.dataset.productid
+    var action = this.dataset.action
+    console.log("productid: ", productid, "action: ", action)
+    // console.log(e.target, "was clicked")
+    // $.ajax(
+    //   {
+    //     url:"/ProductApi/add_to_cart",
+    //     type: "get",
+    //
+    //     data: {"quantity":$(".data_to_send").val(), csrfmiddlewaretoken: '{{ csrf_token }}'},
+    //     success: async function (response)
+    //     {
+    //       console.log(response.data_from_server)
+    //       document.querySelector(".amount").textContent = response.data_from_server
+    //     }
+    //   })
 
 
   })
