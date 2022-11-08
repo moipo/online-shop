@@ -4,6 +4,7 @@ from .forms import *
 from .models import *
 from django.contrib.auth import  authenticate, login, logout
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 # Create your views here.
 
 class Shop:
@@ -65,6 +66,29 @@ class Shop:
     def logout_view(request):
         if request.user.is_authenticated:
             logout(request)
+
+
+
+
+
+class ProductApi:
+    def add_to_cart(request,*args,**kwargs):
+        quantity = request.GET.get("quantity")
+        print(quantity)
+        data_from_server = "SUCCESS!"
+        return JsonResponse(
+        {
+        "data_from_server" : data_from_server,
+        }
+        )
+
+
+
+
+
+
+
+
 
 
 

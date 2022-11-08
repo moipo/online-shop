@@ -14,8 +14,10 @@
 <br>
 {%endfor%}
 
+<input type="text" value="12" class = "data_to_send">
 
-<script type="text/javascript" defer>
+
+<script type="text/javascript">
 
 // var addToCartBtn = document.querySelector(".{{pr.slug}}")
 
@@ -27,8 +29,27 @@ for (let i = 0; i < allBtns.length; i++)
   allBtns[i].addEventListener("click", (e) =>
   {
     console.log(e.target, "was clicked")
+    $.ajax(
+      {
+        url:"/ProductApi/add_to_cart",
+        type: "get",
+
+        data: {"quantity":$(".data_to_send").val(), csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: async function (response)
+        {
+          console.log(response.data_from_server)
+        }
+      })
+
+
   })
 }
+
+
+
+
+
+
 
 
 </script>
