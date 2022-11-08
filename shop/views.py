@@ -31,7 +31,7 @@ class Shop:
         if request.method == "POST":
             username = request.POST.get("username")
             password = request.POST.get("password")
-            user = authenticate(request, username, password):
+            user = authenticate(request, username, password)
             if user is None:
                 User.objects.create_user(username = username, password = password)
                 return render(request, "", {})
@@ -50,7 +50,7 @@ class Shop:
 
     def login_view(request):
         user_form = UserForm()
-        if request.method = "POST":
+        if request.method == "POST":
             username = request.POST.get("username")
             password = request.POST.get("password")
             user = authenticate(request , username =  username, password = password)

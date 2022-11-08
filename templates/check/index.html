@@ -8,21 +8,31 @@
   {{pr.pic}}
   {{pr.added_at}}
   {{pr.category}}
-  <a class = "btn btn-primary btn-lg"  href="{%url 'product' pr.slug %}" class = "{{pr.slug}}"></a>
+  <!-- <a class = "btn btn-primary btn-lg"  href="{%url 'product' pr.slug %}" class = "{{pr.slug}}"></a> -->
+  <h3 class = "btn btn-primary btn-lg {{pr.slug}}" </h3>
 <hr>
+<br>
+{%endfor%}
 
 
-{% for pr in products %}
-<script type="text/javascript">
+<script type="text/javascript" defer>
 
-const addToCartBtn = document.querySelector(".{{pr.slug}}")
+// var addToCartBtn = document.querySelector(".{{pr.slug}}")
 
-addToCartBtn.addEventListener("click", (e) =>
+
+var allBtns = document.querySelectorAll(".btn")
+
+for (let i = 0; i < allBtns.length; i++)
 {
-  elem = document.querySelector("")
-})
+  allBtns[i].addEventListener("click", (e) =>
+  {
+    console.log(e.target, "was clicked")
+  })
+}
+
 
 </script>
+
 
 
 {% endblock %}
