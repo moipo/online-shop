@@ -3,7 +3,8 @@
 <div class="header">
   <div class="cart">
       <h3>Корзина:</h3>
-      <h3> <div class="amount"> {{crt_total_quantity}} </div> </h3>
+      <div class="amount"><h3>  {{crt_total_quantity}}  </h3></div>
+      <a class = "btn btn-danger btn-lg" href="{% url 'cart' %}"></a>
   </div>
 </div>
 
@@ -12,7 +13,7 @@
 <style>
   .header{
     width: 100%;
-    height: 100px;
+    height: 150px;
     background-color: orange;
     margin-bottom: 20px;
   }

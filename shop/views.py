@@ -33,8 +33,8 @@ class Shop:
 
         if request.user.is_authenticated:
             user = request.user
-            crt, created = Order.objects.get_or_create(customer = user, Delivered = False)
-            order_items = order.orderitem_set.all()
+            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+            order_items = crt.orderitem_set.all()
         else:
             order_items = []
 

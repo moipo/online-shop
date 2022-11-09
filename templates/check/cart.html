@@ -1,5 +1,21 @@
 {%extends 'check/base.html'%}
 
 {% block cart%}
+  <table class = "table">
+    <tr>
+      <th> название </th>
+      <th> количество </th>
+      <th> цена за штуку</th>
+      <th> общая цена </th>
+    </tr>
+    {% for item in order_items%}
+    <tr>
+      <td>{{item.product.name}}</td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.product.price}}</td>
+      <td>{{item.total_item_price}}</td>
+    </tr>
+    {% endfor %}
 
+  </table>
 {% endblock %}
