@@ -13,8 +13,8 @@ class Product(models.Model):
     )
 
     name = models.CharField(verbose_name = "название продукта" , max_length = 100)
-    price = models.IntegerField()
-    rating = models.IntegerField()
+    price = models.IntegerField(null = True, blank = True)
+    rating = models.IntegerField(null = True, blank = True)
     pic = models.ImageField(upload_to = "shop/%Y/%m", null = True, blank = True, default = "default_picture.png")
     added_at = models.DateTimeField(verbose_name = "Data of appearance", auto_now_add = True, null = True)
     category = models.CharField(max_length = 100, choices = CATEGORY)
@@ -42,7 +42,7 @@ class Order(models.Model):
     ("Cart", "Cart"),
     )
 
-    date_created = models.DateTimeField(auto_now_add = True)
+    date_created = models.DateTimeField(null = True)
     products = models.ManyToManyField("Product")
     customer = models.ForeignKey(User, null = True, on_delete = models.SET_NULL)
     status = models.CharField(choices = STATUS, default = "Pending", max_length = 255)

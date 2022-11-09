@@ -92,19 +92,33 @@ class ProductApi:
         user = request.user
         if request.user.is_authenticated:
             # create if it doesn't exit + authentication
-            crt = Order.objects.get(customer = user , status = "Cart")
+            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+            # crt = Order.objects.get(customer = user , status = "Cart")
             order_items = crt.orderitem_set.all()
-            order_item = order_items.filter(product = Product.objects.get(id = product_id))
-            if order_item is None:
-                new_order_item = OrderItem()  #null
-                new_order_item.order = crt
-                new_order_item.product = Product.objects.get(id = product_id)
-                new_order_item.quantity = 1
-                new_order_item.save()
-            else:
-                order_item.quantity += 1
-                order_item.save()
-            total_quantity = sum([ord.quantity for ord in order_items])
+            # order_item = order_items.get(product = Product.objects.get(id = product_id))
+            # if order_item is None:
+            #     new_order_item = OrderItem()  #null
+            #     new_order_item.order = crt
+            #     new_order_item.product = Product.objects.filter(id = product_id)[0]
+            #     new_order_item.quantity = 1
+            #     new_order_item.save()
+            # else:
+            #     order_item.quantity += 1
+            #     order_item.save()
+
+            order_item , created = order_items.get_or_create(
+                product = Product.objects.get(id = product_id),
+                defaults = {
+                    "order":crt,
+                    "product":Product.objects.filter(id = product_id)[0] ,
+                    "quantity" : 0
+                    }
+                )
+            order_item.quantity += 1
+            order_item.save()
+
+
+            total_quantity = sum([item.quantity for item in order_items])
         # obj = Int.objects.all()[0]
         # if obj is None:
         #     integ = Int()
@@ -112,7 +126,6 @@ class ProductApi:
         #     integ.save()
         # else:
         #     integ.amount += int(request.GET.get("quantity"))
-            data_from_server = product_id
             return JsonResponse(
             {
             "total_quantity" : total_quantity,

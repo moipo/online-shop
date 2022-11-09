@@ -45,7 +45,6 @@ for (let i = 0; i < allBtns.length; i++)
           },
         success: async function (response)
         {
-          console.log(response.data_from_server)
           document.querySelector(".amount").textContent = response.total_quantity
         }
       })
