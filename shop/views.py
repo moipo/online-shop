@@ -10,8 +10,15 @@ from django.http import JsonResponse
 class Shop:
     def index(request):
         products = Product.objects.all()
+        if request.user.is_authenticated:
+            user = request.user
+        crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+        order_items = crt.orderitem_set.all()
+
+
         ctx = {
         "products" : products,
+        "crt_total_quantity" : crt.order_total_quantity,
         }
         return render(request, "check/index.html", ctx)
 
@@ -26,13 +33,17 @@ class Shop:
 
         if request.user.is_authenticated:
             user = request.user
-            order, created = Order.objects.get_or_create(customer = user, Delivered = False)
+            crt, created = Order.objects.get_or_create(customer = user, Delivered = False)
             order_items = order.orderitem_set.all()
         else:
             order_items = []
 
 
-        ctx = {"order_items" : order_items}
+        ctx = {
+        "order_items" : order_items,
+        "crt_total_quantity": crt.order_total_quantity,
+        "crt_total_price": crt.order_total_price,
+        }
         return render(request, "check/cart.html", ctx)
 
 
@@ -91,21 +102,8 @@ class ProductApi:
         print(product_id, action)
         user = request.user
         if request.user.is_authenticated:
-            # create if it doesn't exit + authentication
             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-            # crt = Order.objects.get(customer = user , status = "Cart")
             order_items = crt.orderitem_set.all()
-            # order_item = order_items.get(product = Product.objects.get(id = product_id))
-            # if order_item is None:
-            #     new_order_item = OrderItem()  #null
-            #     new_order_item.order = crt
-            #     new_order_item.product = Product.objects.filter(id = product_id)[0]
-            #     new_order_item.quantity = 1
-            #     new_order_item.save()
-            # else:
-            #     order_item.quantity += 1
-            #     order_item.save()
-
             order_item , created = order_items.get_or_create(
                 product = Product.objects.get(id = product_id),
                 defaults = {
@@ -119,13 +117,7 @@ class ProductApi:
 
 
             total_quantity = sum([item.quantity for item in order_items])
-        # obj = Int.objects.all()[0]
-        # if obj is None:
-        #     integ = Int()
-        #     integ.amount = int(request.GET.get("quantity"))
-        #     integ.save()
-        # else:
-        #     integ.amount += int(request.GET.get("quantity"))
+
             return JsonResponse(
             {
             "total_quantity" : total_quantity,

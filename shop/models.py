@@ -34,6 +34,21 @@ class Product(models.Model):
 
 
 
+
+
+
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey("Order", on_delete = models.CASCADE)
+    product = models.ForeignKey("Product", null = True, blank = True, on_delete = models.CASCADE )
+    quantity = models.IntegerField()
+
+    @property
+    def total_item_price(self):
+        return self.product.price * self.quantity
+
+
 class Order(models.Model):
     STATUS = (
     ("Pending", "Pending"),
@@ -50,15 +65,10 @@ class Order(models.Model):
     def __repr__(self):
         return self.name
 
-
-
-
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete = models.CASCADE)
-    product = models.ForeignKey("Product", null = True, blank = True, on_delete = models.CASCADE )
-    quantity = models.IntegerField()
+    @property
+    def order_total_price(self):
+        return sum([item.total_item_price for item in self.orderitem_set.all()])
 
     @property
-    def total_item_price(self):
-        return self.product.price * self.quantity
+    def order_total_quantity(self):
+        return sum([item.quantity for item in self.orderitem_set.all()])
