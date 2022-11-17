@@ -21,8 +21,13 @@ def api_change_cart(request):
                 "quantity" : 0
                 }
             )
-        order_item.quantity += 1
+        if action == "add":
+            order_item.quantity += 1
+        if action == "remove":
+            order_item.quantity -= 1
         order_item.save()
+
+        if order_item.quantity <= 0: order_item.delete()
 
 
         total_quantity = sum([item.quantity for item in order_items])

@@ -52,6 +52,10 @@ class Shop:
 
 
 
+
+
+
+
     def registration(request):
 
         user_form = UserForm()
