@@ -10,7 +10,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 
-class Shop:
+class Prototype:
     def index(request):
         products = Product.objects.all()
         if request.user.is_authenticated:
@@ -100,7 +100,10 @@ class Shop:
 
 
 
-
+class Shop:
+    def index(request):
+        ctx = {}
+        return render(request,"index.html",ctx)
 
 # class ProductApi:
 #     def change_cart(request):
