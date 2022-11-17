@@ -10,7 +10,6 @@
   <img src="{{pr.pic.url}}" alt="" style = "width:50px;">
   {{pr.added_at}}
   {{pr.category}}
-
   <div data-product_id = "{{pr.id}}" data-action = "add" class = "btn btn-primary btn-lg"> </div> <!-- js btn -->
   <div data-product_id = "{{pr.id}}" data-action = "remove" class = "btn btn-danger btn-lg"> </div>
 <hr>
@@ -72,6 +71,8 @@ function updateUserOrder(product_id, action)
 
     .then((response) =>{
       console.log("total_quantity: ", response  )
+      document.querySelector(".amount").textContent = response.total_quantity
+
       document.querySelector(".amount").textContent = response.total_quantity
       })
 }

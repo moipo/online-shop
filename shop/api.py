@@ -31,9 +31,11 @@ def api_change_cart(request):
 
 
         total_quantity = sum([item.quantity for item in order_items])
+        order_quantity = {item.product.name : item.quantity for item in order_items}
 
         return Response(
             {
             "total_quantity" : total_quantity,
+            "order_quantity" : order_quantity,
             }
         )
