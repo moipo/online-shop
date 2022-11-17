@@ -101,9 +101,29 @@ class Prototype:
 
 
 class Shop:
+    def cart(request):
+        ctx = {}
+        return render(request,"cart.html",ctx)
+        
+    def checkout(request):
+        ctx = {}
+        return render(request,"checkout.html",ctx)
+
+    def contact(request):
+        ctx = {}
+        return render(request,"contact.html",ctx)
+
+    def detail(request):
+        ctx = {}
+        return render(request,"detail.html",ctx)
+
     def index(request):
         ctx = {}
         return render(request,"index.html",ctx)
+
+    def shop(request):
+        ctx = {}
+        return render(request,"shop.html",ctx)
 
 # class ProductApi:
 #     def change_cart(request):
