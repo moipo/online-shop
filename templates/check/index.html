@@ -21,7 +21,6 @@
 
 <script type="text/javascript" defer>
 
-// var addToCartBtn = document.querySelector(".{{pr.slug}}")
 
 
 var allBtns = document.querySelectorAll(".btn")
@@ -30,39 +29,56 @@ for (let i = 0; i < allBtns.length; i++)
 {
   allBtns[i].addEventListener("click", function (e)
   {
-    var product_id = this.dataset.product_id
-    var action = this.dataset.action
-    console.log(user)
-    console.log(csrftoken)
-    console.log("product_id: ", product_id, "action: ", action)
-    fetch("/api/change_cart", //     /ProductApi/change_cart
+      var product_id = this.dataset.product_id
+      var action = this.dataset.action
+
+      if(user=="AnonymousUser")
       {
-        method:"POST",
-        headers:
-        {
-          'Content-type':"application/json",
-          "X-CSRFToken": csrftoken
-        },
-        // body: "foo=bar"
-        body: JSON.stringify(
-        {
-          "product_id":product_id,
-          "action" : action,
+        console.log("User Not Logged In")
+      }
+      else
+      {
+        updateUserOrder(product_id, action)
+      }
+    })
+  }
 
-        })
+
+function updateUserOrder(product_id, action)
+{
+  var url = "/api/change_cart"
+
+  fetch( url ,
+    {
+      method:"POST",
+      headers:
+      {
+        'Content-type':"application/json",
+        "X-CSRFToken": csrftoken
+      },
+
+      body: JSON.stringify(
+      {
+        "product_id":product_id,
+        "action" : action,
+
       })
+    })
 
-      .then((response) => {
-        return response.json();
+    .then((resp) => {
+      return resp.json();
+    })
+
+    .then((response) =>{
+      console.log("total_quantity: ", response  )
+      document.querySelector(".amount").textContent = response.total_quantity
       })
+}
 
-      .then((response) =>{
-        console.log("total_quantity: ", response  )
-        document.querySelector(".amount").textContent = response.total_quantity
-         // location.reload()
-        })
-      })
-    }
+
+</script>
+
+{% endblock %}
 
 
 
@@ -70,6 +86,12 @@ for (let i = 0; i < allBtns.length; i++)
 
 
 
+
+
+
+
+
+<!--
     // $.ajax(
     //   {
     //     // url:"/ProductApi/change_cart",
@@ -85,13 +107,4 @@ for (let i = 0; i < allBtns.length; i++)
     //     {
     //       document.querySelector(".amount").textContent = response.total_quantity
     //     }
-    //   })
-
-
-
-
-</script>
-
-
-
-{% endblock %}
+    //   }) -->
