@@ -62,9 +62,15 @@
                         </tr>
                     </thead>
                     <tbody class="align-middle">
+
+
+
+
+
+                        {% for item in order_items%}
                         <tr>
-                            <td class="align-middle"><img src="{%static 'img/product-1.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><img src="{{item.product.pic.url}}" alt="" style="width: 50px;"> {{item.product.name}}</td>
+                            <td class="align-middle">${{item.product.price}} </td>
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
@@ -72,7 +78,7 @@
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
@@ -80,9 +86,15 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                            <td class="align-middle">${{item.total_item_price}}</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td>
                         </tr>
+
+                        {% endfor %}
+
+
+
+
                         <tr>
                             <td class="align-middle"><img src="{%static 'img/product-2.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
                             <td class="align-middle">$150</td>
