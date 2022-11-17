@@ -100,9 +100,12 @@ class Shop:
 
 # class ProductApi:
 #     def change_cart(request):
-#         product_id = request.GET.get("product_id")
-#         action = request.GET.get("action")
+#         print(request.POST.get("foo"))
+#         product_id = request.body[1]
+#         action = request.body[3]
+#         print("method is being executed")
 #         print(product_id, action)
+#
 #         user = request.user
 #         if request.user.is_authenticated:
 #             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")

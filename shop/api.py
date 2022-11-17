@@ -1,12 +1,14 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import *
-
+# import json
 
 @api_view(["GET", "POST"])
 def api_change_cart(request):
-    product_id = request.GET.get("product_id")
-    action = request.GET.get("action")
+    print(type(request.data))
+    product_id = request.data.get("product_id")
+    action = request.data.get("action")
+
     print(product_id, action)
     user = request.user
     if request.user.is_authenticated:
