@@ -33,7 +33,7 @@
 
 
     <!-- Breadcrumb Start -->
-    <div class="container-fluid">
+    <!-- <div class="container-fluid">
         <div class="row px-xl-5">
             <div class="col-12">
                 <nav class="breadcrumb bg-light mb-30">
@@ -43,7 +43,7 @@
                 </nav>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Breadcrumb End -->
 
 
@@ -87,7 +87,7 @@
                                 </div>
                             </td>
                             <td class="align-middle">${{item.total_item_price}}</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger change_cart_btn" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td>
                         </tr>
 
                         {% endfor %}
@@ -183,14 +183,14 @@
                 </table>
             </div>
             <div class="col-lg-4">
-                <form class="mb-30" action="">
+                <!-- <form class="mb-30" action="">
                     <div class="input-group">
                         <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
                         <div class="input-group-append">
                             <button class="btn btn-primary">Apply Coupon</button>
                         </div>
                     </div>
-                </form>
+                </form> -->
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
                 <div class="bg-light p-30 mb-5">
                     <div class="border-bottom pb-2">
@@ -236,6 +236,62 @@
 
         <!-- Template Javascript -->
         <script src="{%static  'js/main.js'%}"></script>
+
+<script>
+        var allBtns = document.querySelectorAll(".change_cart_btn")
+
+        for (let i = 0; i < allBtns.length; i++)
+        {
+          allBtns[i].addEventListener("click", function (e)
+          {
+              var product_id = this.dataset.product_id
+              var action = this.dataset.action
+
+              if(user=="AnonymousUser")
+              {
+                console.log("User Not Logged In")
+              }
+              else
+              {
+                updateUserOrder(product_id, action)
+              }
+            })
+          }
+
+
+        function updateUserOrder(product_id, action)
+        {
+          var url = "/api/change_cart"
+
+          fetch( url ,
+            {
+              method:"POST",
+              headers:
+              {
+                'Content-type':"application/json",
+                "X-CSRFToken": csrftoken
+              },
+
+              body: JSON.stringify(
+              {
+                "product_id":product_id,
+                "action" : action,
+
+              })
+            })
+
+            .then((resp) => {
+              return resp.json();
+            })
+
+            .then((response) =>{
+              console.log("total_quantity: ", response  )
+              document.querySelector(".amount").textContent = response.total_quantity
+              location.reload()
+              })
+        }
+</script>
+
 </body>
 
 </html>
