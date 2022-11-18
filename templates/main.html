@@ -1,1 +1,128 @@
 {%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>MultiShop - Online Shop Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="{%static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{%static 'lib/animate/animate.min.css'%}" rel="stylesheet">
+    <link href="{%static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{%static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    {% include 'include/topbar.html'%}
+    {% include 'include/navbar.html'%}
+
+
+
+
+    {%block cart%} {%endblock%}
+    {%block checkout%} {%endblock%}
+    {%block contact%} {%endblock%}
+    {%block detail%} {%endblock%}
+    {%block index%} {%endblock%}
+    {%block shop%} {%endblock%}
+
+
+
+
+
+
+
+
+    {% include 'include/footer.html'%}
+
+
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+      <!-- JavaScript Libraries -->
+      <script src="https://code.jquery.com/jquery-3.4.1.min.jpg"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+      <script src="{%static 'lib/easing/easing.min.js'%}"></script>
+      <script src="{%static 'lib/owlcarousel/owl.carousel.min.js'%}"></script>
+
+      <!-- Contact Javascript File -->
+      <script src="{%static 'mail/jqBootstrapValidation.min.js'%}"></script>
+      <script src="{%static  'mail/contact.js'%}"></script>
+
+      <!-- Template Javascript -->
+      <script src="{%static  'js/main.js'%}"></script>
+
+<script>
+      var allBtns = document.querySelectorAll(".change_cart_btn")
+
+      for (let i = 0; i < allBtns.length; i++)
+      {
+        allBtns[i].addEventListener("click", function (e)
+        {
+            var product_id = this.dataset.product_id
+            var action = this.dataset.action
+
+            if(user=="AnonymousUser")
+            {
+              console.log("User Not Logged In")
+            }
+            else
+            {
+              updateUserOrder(product_id, action)
+            }
+          })
+        }
+
+
+      function updateUserOrder(product_id, action)
+      {
+        var url = "/api/change_cart"
+
+        fetch( url ,
+          {
+            method:"POST",
+            headers:
+            {
+              'Content-type':"application/json",
+              "X-CSRFToken": csrftoken
+            },
+
+            body: JSON.stringify(
+            {
+              "product_id":product_id,
+              "action" : action,
+
+            })
+          })
+
+          .then((resp) => {
+            return resp.json();
+          })
+
+          .then((response) =>{
+            console.log("total_quantity: ", response  )
+            document.querySelector(".amount").textContent = response.total_quantity
+            location.reload()
+            })
+      }
+</script>
+
+</body>
+
+</html>
