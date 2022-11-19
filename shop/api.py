@@ -34,15 +34,27 @@ def api_change_cart(request):
         order_item.quantity -= 1
     order_item.save()
 
+    order_item_quantity = order_item.quantity
+    order_item_total_price = order_item.total_item_price
+
+
     if order_item.quantity <= 0: order_item.delete()
 
 
     total_quantity = sum([item.quantity for item in order_items])
-    order_quantity = {item.product.name : item.quantity for item in order_items}
+    total_price = sum([item.total_item_price for item in order_items])
+    # order_quantity = {item.product.name : item.quantity for item in order_items}
+
 
     return Response(
         {
         "total_quantity" : total_quantity,
-        "order_quantity" : order_quantity,
+        "total_price":total_price,
+        # "order_quantity" : order_quantity,
+
+
+        "order_item_quantity" : order_item_quantity,
+        "order_item_total_price": order_item_total_price,
+
         }
     )

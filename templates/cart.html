@@ -50,7 +50,7 @@
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
+                                    <input data-product_id_price ={{item.product.id}} type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-plus change_cart_btn"  data-product_id = "{{item.product.id}}" data-action = "add">
                                             <i class="fa fa-plus"></i>
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">${{item.total_item_price}}</td>
+                            <td class="align-middle" >${{item.total_item_price}}</td>
                             <td class="align-middle"><button class="btn btn-sm btn-danger change_cart_btn" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td>
                         </tr>
 
@@ -209,58 +209,69 @@
         <!-- Template Javascript -->
         <script src="{%static  'js/main.js'%}"></script>
 
-<!-- <script>
-        var allBtns = document.querySelectorAll(".change_cart_btn")
+      <script>
+            var allBtns = document.querySelectorAll(".change_cart_btn")
 
-        for (let i = 0; i < allBtns.length; i++)
-        {
-          allBtns[i].addEventListener("click", function (e)
-          {
-              var product_id = this.dataset.product_id
-              var action = this.dataset.action
-
-              // if(user=="AnonymousUser")
-              // {
-              //   console.log("User Not Logged In")
-              // }
-              // else
-              // {
-              updateUserOrder(product_id, action)
-              // }
-            })
-          }
-
-
-        function updateUserOrder(product_id, action)
-        {
-          var url = "/api/change_cart"
-
-          fetch( url ,
+            for (let i = 0; i < allBtns.length; i++)
             {
-              method:"POST",
-              headers:
+              allBtns[i].addEventListener("click", function (e)
               {
-                'Content-type':"application/json",
-                "X-CSRFToken": csrftoken
-              },
+                  var product_id = this.dataset.product_id
+                  var action = this.dataset.action
 
-              body: JSON.stringify(
-              {
-                "product_id":product_id,
-                "action" : action,
+                  // if(user=="AnonymousUser")
+                  // {
+                  //   console.log("User Not Logged In")
+                  // }
+                  // else
+                  // {
+                  updateUserOrder(product_id, action)
+                  // }
+                })
+              }
 
-              })
-            })
 
-            .then((resp) => {
-              return resp.json();
-            })
+            function updateUserOrder(product_id, action)
+            {
+              var url = "/api/change_cart"
 
-            .then((response) =>{
-              console.log("total_quantity: ", response  )
-              document.querySelector(".total_amount").textContent = response.total_quantity
-              location.reload()
-              })
-        }
-</script> -->
+              fetch( url ,
+                {
+                  method:"POST",
+                  headers:
+                  {
+                    'Content-type':"application/json",
+                    "X-CSRFToken": csrftoken
+                  },
+
+                  body: JSON.stringify(
+                  {
+                    "product_id":product_id,
+                    "action" : action,
+
+                  })
+                })
+
+                .then((resp) => {
+                  return resp.json();
+                })
+
+                .then((response) =>{
+                  console.log("total_quantity: ", response  )
+                  document.querySelector(".total_amount").textContent = response.total_quantity
+
+                  var elem = document.querySelector(`[data-product_id_price='${product_id}']`)
+                  elem.value = response.order_item_quantity
+
+
+                  // location.reload()
+
+                  // console.log("total_quantity: ", response  )
+                  // document.querySelector(".total_amount").textContent = response.total_quantity
+                  // location.reload()
+                  })
+            }
+      </script>
+
+</script>
 {%endblock%}

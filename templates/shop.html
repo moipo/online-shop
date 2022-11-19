@@ -479,11 +479,62 @@
         </div>
     </div>
 
-  <style>
-  .href_disabled{
-  pointer-events: none;
-  cursor: default;
-  }
-    </style>
+  <script>
+        var allBtns = document.querySelectorAll(".change_cart_btn")
+
+        for (let i = 0; i < allBtns.length; i++)
+        {
+          allBtns[i].addEventListener("click", function (e)
+          {
+              var product_id = this.dataset.product_id
+              var action = this.dataset.action
+
+              // if(user=="AnonymousUser")
+              // {
+              //   console.log("User Not Logged In")
+              // }
+              // else
+              // {
+              updateUserOrder(product_id, action)
+              // }
+            })
+          }
+
+
+        function updateUserOrder(product_id, action)
+        {
+          var url = "/api/change_cart"
+
+          fetch( url ,
+            {
+              method:"POST",
+              headers:
+              {
+                'Content-type':"application/json",
+                "X-CSRFToken": csrftoken
+              },
+
+              body: JSON.stringify(
+              {
+                "product_id":product_id,
+                "action" : action,
+
+              })
+            })
+
+            .then((resp) => {
+              return resp.json();
+            })
+
+            .then((response) =>{
+              console.log("total_quantity: ", response  )
+              document.querySelector(".total_amount").textContent = response.total_quantity
+              location.reload()
+              })
+        }
+  </script>
+
+
+
     <!-- Shop End -->
 {%endblock%}
