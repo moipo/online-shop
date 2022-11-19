@@ -527,9 +527,13 @@
             })
 
             .then((response) =>{
+              // console.log("total_quantity: ", response  )
+              // document.querySelector(".total_amount").textContent = response.total_quantity
+              // location.reload()
               console.log("total_quantity: ", response  )
               document.querySelector(".total_amount").textContent = response.total_quantity
-              location.reload()
+
+
               })
         }
   </script>
