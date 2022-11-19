@@ -128,8 +128,11 @@ class Shop:
         ctx = {}
         return render(request,"contact.html",ctx)
 
-    def detail(request):
-        ctx = {}
+    def detail(request, product_slug):
+        product = Product.objects.get(slug = product_slug)
+        ctx = {
+        "product":product,
+        }
         return render(request,"detail.html",ctx)
 
     def index(request):

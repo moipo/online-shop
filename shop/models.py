@@ -14,11 +14,15 @@ class Product(models.Model):
 
     name = models.CharField(verbose_name = "название продукта" , max_length = 100)
     price = models.IntegerField(null = True, blank = True)
+    description = models.TextField(default = "", blank = True)
     rating = models.IntegerField(null = True, blank = True)
     pic = models.ImageField(upload_to = "shop/%Y/%m", null = True, blank = True, default = "default_picture.png")
     added_at = models.DateTimeField(verbose_name = "Data of appearance", auto_now_add = True, null = True)
     category = models.CharField(max_length = 100, choices = CATEGORY)
     slug = models.SlugField(blank = True)
+
+
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -29,7 +33,7 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url():
-        return f"product/{self.slug}"
+        return f"detail/{self.slug}"
 
 
 
