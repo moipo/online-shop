@@ -40,7 +40,7 @@
 
 
                         {% for item in order_items%}
-                        <tr>
+                        <tr data-product_id_item ={{item.product.id}} >
                             <td class="align-middle"><img src="{{item.product.pic.url}}" alt="" style="width: 50px;"> {{item.product.name}}</td>
                             <td class="align-middle">${{item.product.price}} </td>
                             <td class="align-middle">
@@ -50,7 +50,7 @@
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input data-product_id_price ={{item.product.id}} type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
+                                    <input data-product_id_quantity ={{item.product.id}} type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-plus change_cart_btn"  data-product_id = "{{item.product.id}}" data-action = "add">
                                             <i class="fa fa-plus"></i>
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle" >${{item.total_item_price}}</td>
+                            <td class="align-middle" data-product_id_price ={{item.product.id}} >${{item.total_item_price}}</td>
                             <td class="align-middle"><button class="btn btn-sm btn-danger change_cart_btn" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td>
                         </tr>
 
@@ -260,9 +260,25 @@
                   console.log("total_quantity: ", response  )
                   document.querySelector(".total_amount").textContent = response.total_quantity
 
-                  var elem = document.querySelector(`[data-product_id_price='${product_id}']`)
-                  elem.value = response.order_item_quantity
+                  if (response.order_item_quantity <= 0)
+                  {
+                    var item = document.querySelector(`[data-product_id_item='${product_id}']`)
+                    item.classList.add("hidden")
+                  }
+                  // else:
+                  // {
+                  //   var item = document.querySelector(`[data-product_id_item='${product_id}']`)
+                  //   item.classList.remove("hidden")
+                  // }
 
+                  var quantity = document.querySelector(`[data-product_id_quantity='${product_id}']`)
+                  quantity.value = response.order_item_quantity
+
+                  var price = document.querySelector(`[data-product_id_price='${product_id}']`)
+                  price.textContent = "$" + response.order_item_total_price
+
+
+                  // if (response.order_item)
 
                   // location.reload()
 
@@ -272,6 +288,12 @@
                   })
             }
       </script>
+
+<style >
+  .hidden{
+    display:none;
+  }
+</style>
 
 </script>
 {%endblock%}
