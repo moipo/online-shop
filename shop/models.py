@@ -59,7 +59,7 @@ class Order(models.Model):
 
     date_created = models.DateTimeField(null = True)
     products = models.ManyToManyField("Product")
-    customer = models.ForeignKey(User, null = True, on_delete = models.SET_NULL)
+    customer = models.ForeignKey(User, blank = True, null = True, on_delete = models.SET_NULL)
     status = models.CharField(choices = STATUS, default = "Pending", max_length = 255)
 
     def __repr__(self):

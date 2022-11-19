@@ -103,20 +103,21 @@ class Prototype:
 class Shop:
     def cart(request):
 
-        if request.user.is_authenticated:
-            user = request.user
-            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-            order_items = crt.orderitem_set.all()
-        else:
-            order_items = []
+        user = request.user
 
+        if request.user.is_authenticated:
+            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+        else:
+            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+
+        order_items = crt.orderitem_set.all()
 
         ctx = {
         "order_items" : order_items,
         "crt_total_quantity": crt.order_total_quantity,
         "crt_total_price": crt.order_total_price,
         }
-        
+
         return render(request,"cart.html",ctx)
 
     def checkout(request):

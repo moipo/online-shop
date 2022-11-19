@@ -10,32 +10,39 @@ def api_change_cart(request):
 
     print(product_id, action)
     user = request.user
+    # if request.user.is_authenticated:
+    # crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+    # order_items = crt.orderitem_set.all()
     if request.user.is_authenticated:
         crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-        order_items = crt.orderitem_set.all()
-        order_item , created = order_items.get_or_create(
-            product = Product.objects.get(id = product_id),
-            defaults = {
-                "order":crt,
-                "product":Product.objects.filter(id = product_id)[0] ,
-                "quantity" : 0
-                }
-            )
-        if action == "add":
-            order_item.quantity += 1
-        if action == "remove":
-            order_item.quantity -= 1
-        order_item.save()
-
-        if order_item.quantity <= 0: order_item.delete()
+    else:
+        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+    order_items = crt.orderitem_set.all()
 
 
-        total_quantity = sum([item.quantity for item in order_items])
-        order_quantity = {item.product.name : item.quantity for item in order_items}
-
-        return Response(
-            {
-            "total_quantity" : total_quantity,
-            "order_quantity" : order_quantity,
+    order_item , created = order_items.get_or_create(
+        product = Product.objects.get(id = product_id),
+        defaults = {
+            "order":crt,
+            "product":Product.objects.filter(id = product_id)[0] ,
+            "quantity" : 0
             }
         )
+    if action == "add":
+        order_item.quantity += 1
+    if action == "remove":
+        order_item.quantity -= 1
+    order_item.save()
+
+    if order_item.quantity <= 0: order_item.delete()
+
+
+    total_quantity = sum([item.quantity for item in order_items])
+    order_quantity = {item.product.name : item.quantity for item in order_items}
+
+    return Response(
+        {
+        "total_quantity" : total_quantity,
+        "order_quantity" : order_quantity,
+        }
+    )
