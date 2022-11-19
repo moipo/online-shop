@@ -109,8 +109,8 @@ class Shop:
             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
         else:
             crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-
         order_items = crt.orderitem_set.all()
+
 
         ctx = {
         "order_items" : order_items,
@@ -137,7 +137,20 @@ class Shop:
         return render(request,"index.html",ctx)
 
     def shop(request):
-        ctx = {}
+
+        user = request.user
+
+        if request.user.is_authenticated:
+            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+        else:
+            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+
+
+        all_products = Product.objects.all()
+        ctx = {
+        "all_products" : all_products,
+        "crt_total_quantity": crt.order_total_quantity,
+        }
         return render(request,"shop.html",ctx)
 
 # class ProductApi:

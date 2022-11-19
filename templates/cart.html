@@ -209,7 +209,7 @@
         <!-- Template Javascript -->
         <script src="{%static  'js/main.js'%}"></script>
 
-<script>
+<!-- <script>
         var allBtns = document.querySelectorAll(".change_cart_btn")
 
         for (let i = 0; i < allBtns.length; i++)
@@ -258,9 +258,9 @@
 
             .then((response) =>{
               console.log("total_quantity: ", response  )
-              document.querySelector(".amount").textContent = response.total_quantity
+              document.querySelector(".total_amount").textContent = response.total_quantity
               location.reload()
               })
         }
-</script>
+</script> -->
 {%endblock%}
