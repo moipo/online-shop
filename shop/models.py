@@ -12,14 +12,21 @@ class Product(models.Model):
     ("Popular", "Popular"),
     )
 
+    default_description = """
+    Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.
+
+    Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita clita diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum. Ea erat sed et diam takimata sed justo. Magna takimata justo et amet magna et.
+    """
+
     name = models.CharField(verbose_name = "название продукта" , max_length = 100)
     price = models.IntegerField(null = True, blank = True)
-    description = models.TextField(default = "", blank = True)
+    description = models.TextField(default = default_description, blank = True)
     rating = models.IntegerField(null = True, blank = True)
     pic = models.ImageField(upload_to = "shop/%Y/%m", null = True, blank = True, default = "default_picture.png")
     added_at = models.DateTimeField(verbose_name = "Data of appearance", auto_now_add = True, null = True)
     category = models.CharField(max_length = 100, choices = CATEGORY)
     slug = models.SlugField(blank = True)
+
 
 
 
