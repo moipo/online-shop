@@ -72,6 +72,7 @@ class Order(models.Model):
     products = models.ManyToManyField("Product")
     customer = models.ForeignKey(User, blank = True, null = True, on_delete = models.SET_NULL)
     status = models.CharField(choices = STATUS, default = "Pending", max_length = 255)
+    date_added = models.DateTimeField(auto_now_add = True, null = True)
 
     def __repr__(self):
         return self.name
@@ -83,3 +84,15 @@ class Order(models.Model):
     @property
     def order_total_quantity(self):
         return sum([item.quantity for item in self.orderitem_set.all()])
+
+
+
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(User, blank = True, null = True, on_delete = models.SET_NULL)
+    order = models.ForeignKey(Order, blank = True, null = True, on_delete = models.SET_NULL)
+    address = models.CharField(max_length = 200, null = True)
+    city = models.CharField(max_length = 200, null = True)
+    date_added = models.DateTimeField(auto_now_add = True, null = True)
+
+    def __repr__(self):
+        return self.address
