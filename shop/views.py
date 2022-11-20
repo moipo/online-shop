@@ -70,14 +70,14 @@ class Who:
                 new_user.save()
                 login(request,new_user)
 
-                # crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                # crt.customer = new_user
-                # crt.save()
+                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                crt.customer = new_user
+                crt.save()
 
-                return redirect("shop") #WE USE REDIRECT FOR THE SAKE OF CONTEXT
+                return redirect("shop")
             else:
                 ctx = {
-                "error" : "Such user already exists", #messages
+                "error" : "Such user already exists",
                 "user_form" : user_form,
                 }
                 return render(request, "registration.html", ctx)
@@ -114,7 +114,11 @@ class Who:
     def logout_view(request):
         if request.user.is_authenticated:
             logout(request)
-        return render(request,"shop.html", {})
+
+        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+        crt.delete()
+
+        return redirect("shop")
 
 
 
