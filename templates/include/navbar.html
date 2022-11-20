@@ -51,7 +51,13 @@
                         </div>
                         <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
                     </div>
+
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
+                      {% if user.is_authenticated%}
+                      <a href = "{%url 'logout_view' %}"  class = "btn btn-primary" name="button">Выйти</a>
+                      {%else%}
+                      <a href = "{%url 'login_view' %}" type="button" class = "btn btn-primary" name="button">Войти</a>
+                      {%endif%}
                         <!-- <a href="" class="btn px-0">
                             <i class="fas fa-heart text-primary"></i>
                             <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>

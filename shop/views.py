@@ -55,7 +55,7 @@ class Prototype:
 
 
 
-
+class Who:
     def registration(request):
 
         user_form = UserForm()
@@ -64,19 +64,26 @@ class Prototype:
             username = request.POST.get("username")
             password = request.POST.get("password")
             user = authenticate(request, username, password)
+            print(user)
             if user is None:
-                User.objects.create_user(username = username, password = password)
-                return render(request, "", {})
+                new_user = User.objects.create_user(username = username, password = password)
+                new_user.save()
+                login(new_user)
+                # crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                # crt.customer = new_user
+                # crt.save()
+
+                return render(request, "checkout.html", {})
             else:
                 ctx = {
                 "error" : "Такой пользователь уже существует. Попробуйте снова.",
                 "user_form" : user_form
                 }
-                return render(request, "thesameview", ctx)
+                return render(request, "registration.html", ctx)
         ctx = {
         "user_form" : user_form
         }
-        return render(request, "thesameview", ctx)
+        return render(request, "registration.html", ctx)
 
 
 
@@ -92,11 +99,14 @@ class Prototype:
         ctx = {
         "user_form" : user_form,
         }
-        return render(request, "login_view", ctx)
+        return render(request, "login_view.html", ctx)
+
+
 
     def logout_view(request):
         if request.user.is_authenticated:
             logout(request)
+        return render(request,"shop.html", {})
 
 
 
@@ -155,6 +165,8 @@ class Shop:
         "crt_total_quantity": crt.order_total_quantity,
         }
         return render(request,"shop.html",ctx)
+
+
 
 # class ProductApi:
 #     def change_cart(request):
