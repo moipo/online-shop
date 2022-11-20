@@ -6,7 +6,12 @@ from django.contrib.auth.models import User
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["username", "first_name", "email", "password"]
+        fields = [ "first_name", "email", "password"]
+        labels = {"first_name" : "Your name"}
+
+        widgets= {
+        'password' : forms.PasswordInput
+        }
 
 class ProductModelForm(forms.ModelForm):
     class Meta:

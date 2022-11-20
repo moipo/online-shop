@@ -5,6 +5,7 @@ from .models import *
 from django.contrib.auth import  authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 
@@ -58,28 +59,30 @@ class Prototype:
 class Who:
     def registration(request):
 
-        user_form = UserForm()
+
 
         if request.method == "POST":
-            username = request.POST.get("username")
+            email = request.POST.get("email")
             password = request.POST.get("password")
-            user = authenticate(request, username, password)
-            print(user)
+            user = authenticate(request, username = email, password = password)
             if user is None:
-                new_user = User.objects.create_user(username = username, password = password)
+                new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
                 new_user.save()
-                login(new_user)
+                login(request,new_user)
+
                 # crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
                 # crt.customer = new_user
                 # crt.save()
 
-                return render(request, "checkout.html", {})
+                return redirect("shop") #WE USE REDIRECT FOR THE SAKE OF CONTEXT
             else:
                 ctx = {
-                "error" : "Такой пользователь уже существует. Попробуйте снова.",
-                "user_form" : user_form
+                "error" : "Such user already exists", #messages
+                "user_form" : user_form,
                 }
                 return render(request, "registration.html", ctx)
+
+        user_form = UserForm()
         ctx = {
         "user_form" : user_form
         }
@@ -88,14 +91,19 @@ class Who:
 
 
     def login_view(request):
-        user_form = UserForm()
+
         if request.method == "POST":
-            username = request.POST.get("username")
+            email = request.POST.get("email")
             password = request.POST.get("password")
-            user = authenticate(request , username =  username, password = password)
+            user = authenticate(request , username =  email, password = password)
             if user is not None:
                 login(request,user)
-                return redirect("login_view")
+                return redirect("cart")
+            else:
+                messages.error(request, "Your input is incorrect")
+                return render(reqeuest, "login_view")
+
+        user_form = UserForm()
         ctx = {
         "user_form" : user_form,
         }
