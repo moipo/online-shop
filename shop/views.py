@@ -119,7 +119,7 @@ class Shop:
                 return redirect("my_orders")
             else:
                 form = ShippingAddressForm(request.POST)
-                messages.error("Input is incorrect")
+                messages.error(request,"Input is incorrect")
                 return render(request,"checkout.html",ctx)
 
 
