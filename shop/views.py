@@ -91,8 +91,6 @@ class Shop:
 
     @login_required(login_url = "/registration")
     def checkout(request):
-
-
         if request.method == "POST":
             form = ShippingAddressForm(request.POST)
             print(request.POST)
@@ -168,9 +166,10 @@ class Shop:
         }
         return render(request,"shop.html",ctx)
 
+
     @login_required(login_url = "/registration")
     def my_orders(request):
-        orders_made = Order.objects.exclude(status = "Cart")
+        orders_made = Order.objects.exclude(status = "Cart").filter(customer = request.user)
         ctx = {
         "orders_made" : orders_made,
         "crt_total_quantity": Shop.get_cart_total(request),
