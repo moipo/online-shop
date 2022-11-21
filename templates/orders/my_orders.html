@@ -30,7 +30,7 @@
                             <th>Order id</th>
                             <th>Quantity</th>
                             <th>Price</th>
-                            <!-- <th>Remove</th> -->
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody class="align-middle">
@@ -42,12 +42,12 @@
                         {% for order in orders_made%}
                         <tr data-product_id_item ={{item.product.id}} >
                             <td class="align-middle"><img src="{{item.product.pic.url}}" alt="" style="width: 50px;"> {{order.id}}</td>
-                            <td class="align-middle">${{order.order_total_quantity}} </td>
+                            <td class="align-middle">{{order.order_total_quantity}} </td>
                             <!-- <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;"> -->
                                     <!--{# <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-minus change_cart_btn"  data-product_id = "{{item.product.id}}" data-action = "remove">
-                                        <i class="fa fa-minus"></i> 
+                                        <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
                                     <input data-product_id_quantity ={{item.product.id}} type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
@@ -59,6 +59,7 @@
                                 <!-- </div>
                             </td> -->
                             <td class="align-middle" >${{order.order_total_price}}</td>
+                            <td class="align-middle" >{{order.date_added}}</td>
                             <!-- <td class="align-middle"><button class="btn btn-sm btn-danger change_cart_btn" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td> -->
                         </tr>
 
@@ -154,7 +155,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 hidden_proceed">
                 <!-- <form class="mb-30" action="">
                     <div class="input-group">
                         <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
@@ -163,7 +164,7 @@
                         </div>
                     </div>
                 </form> -->
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3"></span></h5>
                 <div class="bg-light p-30 mb-5">
                     <!-- <div class="border-bottom pb-2"> -->
                         <!-- <div class="d-flex justify-content-between mb-3">
@@ -175,7 +176,7 @@
                             <h6 class="font-weight-medium">$10</h6>
                         </div> -->
                     <!-- </div> -->
-                    <div class="pt-2">
+                    <div class="pt-2 hidden_proceed">
                         <div class="d-flex justify-content-between mt-2">
                             <h5>Total</h5>
                             <h5 class = "crt_total_price">${{crt_total_price}}</h5>
@@ -288,7 +289,12 @@
   .hidden{
     display:none;
   }
+
+  .hidden_proceed{
+    visibility:hidden;
+  }
+
 </style>
 
-</script>
+
 {%endblock%}

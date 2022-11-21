@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import inlineformset_factory
 from .forms import *
 from .models import *
@@ -94,13 +94,16 @@ class Shop:
 
 
         if request.method == "POST":
-
+            form = ShippingAddressForm(request.POST)
+            print(request.POST)
             if form.is_valid():
+                print("form_is_valid")
                 ship_addr = form.save()
                 user = request.user
                 ship_addr.customer = user
-                order = Order.objects.filter(customer = user, status = "Cart")[0]
+                order = get_object_or_404(Order, customer = user, status = "Cart")
                 order.status = "Pending"
+                order.save()
                 ship_addr.order = order
                 ship_addr.save()
 
@@ -164,14 +167,15 @@ class Shop:
         "crt_total_quantity": crt.order_total_quantity,
         }
         return render(request,"shop.html",ctx)
-        
+
+    @login_required(login_url = "/registration")
     def my_orders(request):
         orders_made = Order.objects.exclude(status = "Cart")
         ctx = {
         "orders_made" : orders_made,
-        "crt_total_price": crt.order_total_price,
+        "crt_total_quantity": Shop.get_cart_total(request),
         }
-        return render(request,"who/my_orders.html",ctx)
+        return render(request,"orders/my_orders.html",ctx)
 
 
 
