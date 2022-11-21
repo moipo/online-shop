@@ -26,10 +26,17 @@
 
 
                 <div class="bg-light p-30 mb-5">
-                  You must sign in or sign up in order to make an order
+                    Authentication is requeired to make an order <br>
 
                     <div class="row">
+
                       <form action = "#" method = "POST"> {% csrf_token %}
+                        {%if error %}
+                        <br>
+                        <div class = "text-danger">{{error}}</div>
+                        <br>
+                        {%endif%}
+
                       {%for field in user_form.visible_fields%}
 
                         <div class="col-md-6 form-group">

@@ -124,7 +124,9 @@ class Shop:
         return render(request,"detail.html",ctx)
 
     def index(request):
-        ctx = {}
+        ctx = {
+        "crt_total_quantity": Shop.get_cart_total(request),
+        }
         return render(request,"index.html",ctx)
 
     def shop(request):
@@ -165,10 +167,14 @@ class Who:
                 crt.customer = new_user
                 crt.save()
 
+                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                crt.delete()
+
                 return redirect("shop")
             else:
+                user_form = UserForm(request.POST)
                 ctx = {
-                "error" : "Such user already exists",
+                "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
                 "user_form" : user_form,
                 "crt_total_quantity": Shop.get_cart_total(request),
                 }
@@ -176,7 +182,8 @@ class Who:
 
         user_form = UserForm()
         ctx = {
-        "user_form" : user_form
+        "user_form" : user_form,
+        "crt_total_quantity": Shop.get_cart_total(request),
         }
         return render(request, "who/registration.html", ctx)
 
@@ -185,6 +192,7 @@ class Who:
     def login_view(request):
 
         if request.method == "POST":
+
             email = request.POST.get("email")
             password = request.POST.get("password")
             user = authenticate(request , username =  email, password = password)
@@ -192,11 +200,13 @@ class Who:
                 login(request,user)
                 return redirect("cart")
             else:
-                messages.error(request, "Your input is incorrect")
+                user_form = UserForm(request.POST)
+                messages.error(request, "Wrong password or username")
                 ctx = {
                 "crt_total_quantity": Shop.get_cart_total(request),
+                "user_form" : user_form,
                 }
-                return render(reqeuest, "login_view",ctx)
+                return render(request, "who/login_view.html",ctx)
 
         user_form = UserForm()
         ctx = {
