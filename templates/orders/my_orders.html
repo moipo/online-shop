@@ -1,0 +1,294 @@
+{%extends "main.html"%}
+{%load static%}
+
+{%block cart%}
+
+
+    <!-- Breadcrumb Start -->
+    <!-- <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="#">Home</a>
+                    <a class="breadcrumb-item text-dark" href="#">Shop</a>
+                    <span class="breadcrumb-item active">Shopping Cart</span>
+                </nav>
+            </div>
+        </div>
+    </div> -->
+    <!-- Breadcrumb End -->
+
+
+    <!-- Cart Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-lg-8 table-responsive mb-5">
+                <table class="table table-light table-borderless table-hover text-center mb-0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Products</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <!-- <th>Remove</th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+
+
+
+
+
+                        {% for item in order_items%}
+                        <tr data-product_id_item ={{item.product.id}} >
+                            <td class="align-middle"><img src="{{item.product.pic.url}}" alt="" style="width: 50px;"> {{item.product.name}}</td>
+                            <td class="align-middle">${{item.product.price}} </td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-minus change_cart_btn"  data-product_id = "{{item.product.id}}" data-action = "remove">
+                                        <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input data-product_id_quantity ={{item.product.id}} type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{item.quantity}}">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-plus change_cart_btn"  data-product_id = "{{item.product.id}}" data-action = "add">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle" data-product_id_price ={{item.product.id}} >${{item.total_item_price}}</td>
+                            <!-- <td class="align-middle"><button class="btn btn-sm btn-danger change_cart_btn" data-product_id = "{{item.product.id}}" data-action = "remove"><i class="fa fa-times"></i></button></td> -->
+                        </tr>
+
+                        {% endfor %}
+
+<!--
+
+
+                        <tr>
+                            <td class="align-middle"><img src="{%static 'img/product-2.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-plus">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle"><img src="{%static 'img/product-3.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-plus">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle"><img src="{%static 'img/product-4.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-plus">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle"><img src="{%static 'img/product-5.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary btn-plus">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <!-- <form class="mb-30" action="">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary">Apply Coupon</button>
+                        </div>
+                    </div>
+                </form> -->
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
+                <div class="bg-light p-30 mb-5">
+                    <!-- <div class="border-bottom pb-2"> -->
+                        <!-- <div class="d-flex justify-content-between mb-3">
+                            <h6>Subtotal</h6>
+                            <h6>$150</h6>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-medium">Shipping</h6>
+                            <h6 class="font-weight-medium">$10</h6>
+                        </div> -->
+                    <!-- </div> -->
+                    <div class="pt-2">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5>Total</h5>
+                            <h5 class = "crt_total_price">${{crt_total_price}}</h5>
+                        </div>
+                        <a class="btn btn-block btn-primary font-weight-bold my-3 py-3" href = "{%url 'checkout'%}" >Proceed To Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cart End -->
+
+
+
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.jpg"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="{%static 'lib/easing/easing.min.js'%}"></script>
+        <script src="{%static 'lib/owlcarousel/owl.carousel.min.js'%}"></script>
+
+        <!-- Contact Javascript File -->
+        <script src="{%static 'mail/jqBootstrapValidation.min.js'%}"></script>
+        <script src="{%static  'mail/contact.js'%}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{%static  'js/main.js'%}"></script>
+
+      <script>
+            var allBtns = document.querySelectorAll(".change_cart_btn")
+
+            for (let i = 0; i < allBtns.length; i++)
+            {
+              allBtns[i].addEventListener("click", function (e)
+              {
+                  var product_id = this.dataset.product_id
+                  var action = this.dataset.action
+
+                  // if(user=="AnonymousUser")
+                  // {
+                  //   console.log("User Not Logged In")
+                  // }
+                  // else
+                  // {
+                  updateUserOrder(product_id, action)
+                  // }
+                })
+              }
+
+
+            function updateUserOrder(product_id, action)
+            {
+              var url = "/api/change_cart"
+
+              fetch( url ,
+                {
+                  method:"POST",
+                  headers:
+                  {
+                    'Content-type':"application/json",
+                    "X-CSRFToken": csrftoken
+                  },
+
+                  body: JSON.stringify(
+                  {
+                    "product_id":product_id,
+                    "action" : action,
+
+                  })
+                })
+
+                .then((resp) => {
+                  return resp.json();
+                })
+
+                .then((response) =>{
+                  console.log("total_quantity: ", response  )
+                  document.querySelector(".total_amount").textContent = response.total_quantity
+                  document.querySelector(".crt_total_price").textContent = "$" + response.total_price
+
+                  if (response.order_item_quantity <= 0)
+                  {
+                    var item = document.querySelector(`[data-product_id_item='${product_id}']`)
+                    item.classList.add("hidden")
+                  }
+                  // else:
+                  // {
+                  //   var item = document.querySelector(`[data-product_id_item='${product_id}']`)
+                  //   item.classList.remove("hidden")
+                  // }
+
+                  var quantity = document.querySelector(`[data-product_id_quantity='${product_id}']`)
+                  quantity.value = response.order_item_quantity
+
+                  var price = document.querySelector(`[data-product_id_price='${product_id}']`)
+                  price.textContent = "$" + response.order_item_total_price
+
+
+
+                  })
+            }
+      </script>
+
+<style >
+  .hidden{
+    display:none;
+  }
+</style>
+
+</script>
+{%endblock%}

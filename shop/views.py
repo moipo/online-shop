@@ -57,73 +57,20 @@ class Prototype:
 
 
 
-class Who:
-    def registration(request):
-
-
-
-        if request.method == "POST":
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            user = authenticate(request, username = email, password = password)
-            if user is None:
-                new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
-                new_user.save()
-                login(request,new_user)
-
-                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                crt.customer = new_user
-                crt.save()
-
-                return redirect("shop")
-            else:
-                ctx = {
-                "error" : "Such user already exists",
-                "user_form" : user_form,
-                }
-                return render(request, "registration.html", ctx)
-
-        user_form = UserForm()
-        ctx = {
-        "user_form" : user_form
-        }
-        return render(request, "registration.html", ctx)
-
-
-
-    def login_view(request):
-
-        if request.method == "POST":
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            user = authenticate(request , username =  email, password = password)
-            if user is not None:
-                login(request,user)
-                return redirect("cart")
-            else:
-                messages.error(request, "Your input is incorrect")
-                return render(reqeuest, "login_view")
-
-        user_form = UserForm()
-        ctx = {
-        "user_form" : user_form,
-        }
-        return render(request, "login_view.html", ctx)
-
-
-
-    def logout_view(request):
-        if request.user.is_authenticated:
-            logout(request)
-
-        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-        crt.delete()
-
-        return redirect("shop")
 
 
 
 class Shop:
+
+    @staticmethod
+    def get_cart_total(request):
+        user = request.user
+        if request.user.is_authenticated:
+            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+        else:
+            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+        return crt.order_total_quantity
+
     def cart(request):
 
         user = request.user
@@ -147,24 +94,32 @@ class Shop:
     def checkout(request):
 
 
-        if request.method == "POST":
-            pass
+        # if request.method == "POST":
+        #     form = ShippingAddressForm(request.POST)
+        #     if form.is_valid():
+        #         pass
+        #     else:
+
 
         shipping_address_form = ShippingAddressForm()
         ctx = {
         "shipping_address_form":shipping_address_form,
+        "crt_total_quantity": Shop.get_cart_total(request),
         }
         return render(request,"checkout.html",ctx)
 
 
     def contact(request):
-        ctx = {}
+        ctx = {
+        "crt_total_quantity": Shop.get_cart_total(request),
+        }
         return render(request,"contact.html",ctx)
 
     def detail(request, product_slug):
         product = Product.objects.get(slug = product_slug)
         ctx = {
         "product":product,
+        "crt_total_quantity": Shop.get_cart_total(request),
         }
         return render(request,"detail.html",ctx)
 
@@ -190,6 +145,76 @@ class Shop:
         return render(request,"shop.html",ctx)
 
 
+
+
+class Who:
+    def registration(request):
+
+
+
+        if request.method == "POST":
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            user = authenticate(request, username = email, password = password)
+            if user is None:
+                new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
+                new_user.save()
+                login(request,new_user)
+
+                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                crt.customer = new_user
+                crt.save()
+
+                return redirect("shop")
+            else:
+                ctx = {
+                "error" : "Such user already exists",
+                "user_form" : user_form,
+                "crt_total_quantity": Shop.get_cart_total(request),
+                }
+                return render(request, "who/registration.html", ctx)
+
+        user_form = UserForm()
+        ctx = {
+        "user_form" : user_form
+        }
+        return render(request, "who/registration.html", ctx)
+
+
+
+    def login_view(request):
+
+        if request.method == "POST":
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            user = authenticate(request , username =  email, password = password)
+            if user is not None:
+                login(request,user)
+                return redirect("cart")
+            else:
+                messages.error(request, "Your input is incorrect")
+                ctx = {
+                "crt_total_quantity": Shop.get_cart_total(request),
+                }
+                return render(reqeuest, "login_view",ctx)
+
+        user_form = UserForm()
+        ctx = {
+        "user_form" : user_form,
+        "crt_total_quantity": Shop.get_cart_total(request),
+        }
+        return render(request, "who/login_view.html", ctx)
+
+
+
+    def logout_view(request):
+        if request.user.is_authenticated:
+            logout(request)
+
+        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+        crt.delete()
+
+        return redirect("shop")
 
 # class ProductApi:
 #     def change_cart(request):
