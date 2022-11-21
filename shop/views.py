@@ -59,7 +59,6 @@ class Prototype:
 
 
 
-
 class Shop:
 
     @staticmethod
@@ -94,11 +93,31 @@ class Shop:
     def checkout(request):
 
 
-        # if request.method == "POST":
-        #     form = ShippingAddressForm(request.POST)
-        #     if form.is_valid():
-        #         pass
-        #     else:
+        if request.method == "POST":
+
+            if form.is_valid():
+                ship_addr = form.save()
+                user = request.user
+                ship_addr.customer = user
+                order = Order.objects.filter(customer = user, status = "Cart")[0]
+                order.status = "Pending"
+                ship_addr.order = order
+                ship_addr.save()
+
+                crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+                crt.save()
+
+
+
+                ctx = {
+                "crt_total_quantity": Shop.get_cart_total(request),
+                }
+
+                return redirect("my_orders")
+            else:
+                form = ShippingAddressForm(request.POST)
+                messages.error("Input is incorrect")
+                return render(request,"checkout.html",ctx)
 
 
         shipping_address_form = ShippingAddressForm()
@@ -145,6 +164,14 @@ class Shop:
         "crt_total_quantity": crt.order_total_quantity,
         }
         return render(request,"shop.html",ctx)
+        
+    def my_orders(request):
+        orders_made = Order.objects.exclude(status = "Cart")
+        ctx = {
+        "orders_made" : orders_made,
+        "crt_total_price": crt.order_total_price,
+        }
+        return render(request,"who/my_orders.html",ctx)
 
 
 
@@ -201,7 +228,7 @@ class Who:
                 return redirect("cart")
             else:
                 user_form = UserForm(request.POST)
-                messages.error(request, "Wrong password or username")
+                messages.error(request, "Wrong password or email")
                 ctx = {
                 "crt_total_quantity": Shop.get_cart_total(request),
                 "user_form" : user_form,

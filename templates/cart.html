@@ -180,7 +180,7 @@
                             <h5>Total</h5>
                             <h5 class = "crt_total_price">${{crt_total_price}}</h5>
                         </div>
-                        <a class="btn btn-block btn-primary font-weight-bold my-3 py-3" href = "{%url 'checkout'%}" >Proceed To Checkout</a>
+                        <a class="btn btn-block btn-primary font-weight-bold my-3 py-3 proceed_to_checkout" href = "{%url 'checkout'%}" >Proceed To Checkout</a>
                     </div>
                 </div>
             </div>
@@ -210,6 +210,13 @@
         <script src="{%static  'js/main.js'%}"></script>
 
       <script>
+
+            if ({{crt_total_quantity}} == '0')
+            {
+              var proceedToCheckoutBtn = document.querySelector(".proceed_to_checkout")
+              proceedToCheckoutBtn.classList.add("hidden_proceed")
+            }
+
             var allBtns = document.querySelectorAll(".change_cart_btn")
 
             for (let i = 0; i < allBtns.length; i++)
@@ -280,6 +287,15 @@
 
 
 
+
+
+
+                  if (response.total_quantity == '0')
+                  {
+                    var proceedToCheckoutBtn = document.querySelector(".proceed_to_checkout")
+                    proceedToCheckoutBtn.classList.add("hidden_proceed")
+                  }
+
                   })
             }
       </script>
@@ -287,6 +303,10 @@
 <style >
   .hidden{
     display:none;
+  }
+
+  .hidden_proceed{
+    visibility:hidden;
   }
 </style>
 
