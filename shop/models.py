@@ -90,8 +90,10 @@ class Order(models.Model):
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(User, blank = True, null = True, on_delete = models.SET_NULL)
     order = models.ForeignKey(Order, blank = True, null = True, on_delete = models.SET_NULL)
-    address = models.CharField(max_length = 200, null = True)
+    country = models.CharField(max_length = 200, null = True)
     city = models.CharField(max_length = 200, null = True)
+    address = models.CharField(max_length = 200, null = True)
+    zip_code = models.CharField(max_length = 200, null = True)
     date_added = models.DateTimeField(auto_now_add = True, null = True)
 
     def __repr__(self):

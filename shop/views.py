@@ -4,6 +4,7 @@ from .forms import *
 from .models import *
 from django.contrib.auth import  authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 
@@ -142,9 +143,19 @@ class Shop:
 
         return render(request,"cart.html",ctx)
 
+    @login_required(login_url = "/registration")
     def checkout(request):
-        ctx = {}
+
+
+        if request.method == "POST":
+            pass
+
+        shipping_address_form = ShippingAddressForm()
+        ctx = {
+        "shipping_address_form":shipping_address_form,
+        }
         return render(request,"checkout.html",ctx)
+
 
     def contact(request):
         ctx = {}
