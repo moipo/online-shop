@@ -20,7 +20,7 @@
 
     <!-- Shop Detail Start -->
     <div class="container-fluid pb-5">
-        <div class="row px-xl-5">
+        <div class="row px-xl-5 ">
             <div class="col-lg-5 mb-30">
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner bg-light">
@@ -50,18 +50,18 @@
                 <div class="h-100 bg-light p-30">
                     <h3>{{product.name}}</h3>
                     <div class="d-flex mb-3">
-                        <div class="text-primary mr-2">
+                        <!-- <div class="text-primary mr-2">
                             <small class="fas fa-star"></small>
                             <small class="fas fa-star"></small>
                             <small class="fas fa-star"></small>
                             <small class="fas fa-star-half-alt"></small>
                             <small class="far fa-star"></small>
-                        </div>
-                        <small class="pt-1">(99 Reviews)</small>
+                        </div> -->
+                        <!-- <small class="pt-1">(99 Reviews)</small> -->
                     </div>
                     <h3 class="font-weight-semi-bold mb-4">${{product.price}}</h3>
                     <p class="mb-4">{{product.description|slice:"100"}}</p>
-                    <div class="d-flex mb-3">
+                    <!-- <div class="d-flex mb-3">
                         <strong class="text-dark mr-3">Sizes:</strong>
                         <form>
                             <div class="custom-control custom-radio custom-control-inline">
@@ -110,9 +110,9 @@
                                 <label class="custom-control-label" for="color-5">Green</label>
                             </div>
                         </form>
-                    </div>
+                    </div> -->
                     <div class="d-flex align-items-center mb-4 pt-2">
-                        <div class="input-group quantity mr-3" style="width: 130px;">
+                        <!-- <div class="input-group quantity mr-3" style="width: 130px;">
                             <div class="input-group-btn">
                                 <button class="btn btn-primary btn-minus">
                                     <i class="fa fa-minus"></i>
@@ -124,23 +124,23 @@
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
-                        </div>
-                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
+                        </div> -->
+                        <button class="btn btn-primary px-3 change_cart_btn" data-product_id = "{{product.id}}" data-action = "add"><i class="fa fa-shopping-cart mr-1"></i> Add To
                             Cart</button>
                     </div>
-                    <div class="d-flex pt-2">
+                    <div class="d-flex pt-3" style = "float:right;">
                         <strong class="text-dark mr-2">Share on:</strong>
                         <div class="d-inline-flex">
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="http://www.facebook.com">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://twitter.com/?">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://www.linkedin.com/">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://www.pinterest.it/login/">
                                 <i class="fab fa-pinterest"></i>
                             </a>
                         </div>
@@ -152,13 +152,13 @@
             <div class="col">
                 <div class="bg-light p-30">
                     <div class="nav nav-tabs mb-4">
-                        <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
-                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                        <div class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</div>
+                        <!-- <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
+                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a> -->
                     </div>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab-pane-1">
-                            <h4 class="mb-3">Product Description</h4>
+                            <h4 class="mb-3">Product Description:</h4>
                             <p>{{product.description}}</p>
 
                         </div>
@@ -262,7 +262,7 @@
 
     <!-- Products Start -->
     <div class="container-fluid py-5">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">You May Also Like</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3"></span></h2>
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
@@ -397,5 +397,63 @@
     </div>
     <!-- Products End -->
 
+    <script>
+          var allBtns = document.querySelectorAll(".change_cart_btn")
 
+          for (let i = 0; i < allBtns.length; i++)
+          {
+            allBtns[i].addEventListener("click", function (e)
+            {
+                var product_id = this.dataset.product_id
+                var action = this.dataset.action
+
+                // if(user=="AnonymousUser")
+                // {
+                //   console.log("User Not Logged In")
+                // }
+                // else
+                // {
+                updateUserOrder(product_id, action)
+                // }
+              })
+            }
+
+
+          function updateUserOrder(product_id, action)
+          {
+            var url = "/api/change_cart"
+
+            fetch( url ,
+              {
+                method:"POST",
+                headers:
+                {
+                  'Content-type':"application/json",
+                  "X-CSRFToken": csrftoken
+                },
+
+                body: JSON.stringify(
+                {
+                  "product_id":product_id,
+                  "action" : action,
+
+                })
+              })
+
+              .then((resp) => {
+                return resp.json();
+              })
+
+              .then((response) =>{
+                // console.log("total_quantity: ", response  )
+                // document.querySelector(".total_amount").textContent = response.total_quantity
+                // location.reload()
+                console.log("total_quantity: ", response  )
+                document.querySelector(".total_amount").textContent = response.total_quantity
+
+
+
+                })
+          }
+    </script>
 {%endblock%}

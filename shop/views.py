@@ -141,6 +141,8 @@ class Shop:
 
     def detail(request, product_slug):
         product = Product.objects.get(slug = product_slug)
+
+        
         ctx = {
         "product":product,
         "crt_total_quantity": Shop.get_cart_total(request),
