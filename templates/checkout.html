@@ -30,7 +30,13 @@
 
 
                         <div class="col-md-11 form-group">
-
+                          {% if messages %}
+                            {%for message in messages%}
+                            <br>
+                            <div class = "text-danger">‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ {{message}}</div>
+                            <br>
+                            {%endfor%}
+                          {%endif%}
                           <form class="address_form form-group"  action="#" method="post"> {%csrf_token%}
                             {%for field in shipping_address_form%}
                             <label>{{field.label}}</label>

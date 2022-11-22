@@ -92,23 +92,27 @@ class Shop:
     @login_required(login_url = "/registration")
     def checkout(request):
         if request.method == "POST":
-            form = ShippingAddressForm(request.POST)
-            print(request.POST)
-            if form.is_valid():
-                print("form_is_valid")
-                ship_addr = form.save()
+            shipping_address_form = ShippingAddressForm(request.POST)
+            card_form = CardForm(request.POST)
+            if shipping_address_form.is_valid() and card_form.is_valid ():
+                print("forms_are_valid")
+                ship_addr = shipping_address_form.save()
+                card = card_form.save()
+
                 user = request.user
                 ship_addr.customer = user
+                card.customer.set(User.objects.filter(id = user.id))
                 order = get_object_or_404(Order, customer = user, status = "Cart")
                 order.status = "Pending"
                 order.save()
                 ship_addr.order = order
+                card.order = order
+                card.save()
+
                 ship_addr.save()
 
                 crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
                 crt.save()
-
-
 
                 ctx = {
                 "crt_total_quantity": Shop.get_cart_total(request),
@@ -117,9 +121,11 @@ class Shop:
                 return redirect("my_orders")
             else:
 
-                form = ShippingAddressForm(request.POST)
-                messages.error(request,"Input is incorrect")
-                ctx = {form:"form"}
+                messages.error(request,"All the fields must be filled")
+                ctx = {
+                "shipping_address_form": shipping_address_form,
+                "card_form" : card_form ,
+                }
                 return render(request,"checkout.html",ctx)
 
 
