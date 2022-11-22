@@ -8,11 +8,8 @@ def api_change_cart(request):
     product_id = request.data.get("product_id")
     action = request.data.get("action")
 
-    print(product_id, action)
     user = request.user
-    # if request.user.is_authenticated:
-    # crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-    # order_items = crt.orderitem_set.all()
+
     if request.user.is_authenticated:
         crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
     else:
@@ -43,14 +40,12 @@ def api_change_cart(request):
 
     total_quantity = sum([item.quantity for item in order_items])
     total_price = sum([item.total_item_price for item in order_items])
-    # order_quantity = {item.product.name : item.quantity for item in order_items}
 
 
     return Response(
         {
         "total_quantity" : total_quantity,
         "total_price":total_price,
-        # "order_quantity" : order_quantity,
 
 
         "order_item_quantity" : order_item_quantity,

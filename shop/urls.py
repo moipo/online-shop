@@ -1,13 +1,13 @@
 from django.urls import path
 from .views import *
 from .api import api_change_cart
+from django.urls import re_path
+from django.views.static import serve
+from django.conf import settings
 
 urlpatterns = [
-    path('prototype', Prototype.index),
-    path('prototype/cart', Prototype.cart, name = "prototype_cart"),
-    path('prototype/product/<slug:product_slug>', Prototype.product, name = "prototype_product" ),
-    # path('prototype/ProductApi/change_cart', ProductApi.change_cart, name = "change_cart" ),
-
+    re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     path('api/change_cart', api_change_cart, name = "api_change_cart"),
     path('cart', Shop.cart, name = "cart"),
     path('checkout', Shop.checkout, name = "checkout"),
@@ -18,9 +18,6 @@ urlpatterns = [
     path('contact', Shop.contact, name = "contact"),
     path('my_orders', Shop.my_orders, name = "my_orders"),
     path('order_detail/<int:order_id>', Shop.order_detail, name = "order_detail"),
-
-
     path('', Shop.index, name = "index"),
     path('shop', Shop.shop, name = "shop")
-
 ]

@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.forms import inlineformset_factory
 from .forms import *
 from .models import *
 from django.contrib.auth import  authenticate, login, logout
@@ -7,49 +6,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
-
-
-
-# Create your views here.
-
-class Prototype:
-    def index(request):
-        products = Product.objects.all()
-        if request.user.is_authenticated:
-            user = request.user
-        crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-        order_items = crt.orderitem_set.all()
-
-
-        ctx = {
-        "products" : products,
-        "crt_total_quantity" : crt.order_total_quantity,
-        }
-        return render(request, "check/index.html", ctx)
-
-
-    def product(request, product_slug):
-        ctx = {}
-        return render(request, "check/product.html", ctx)
-
-
-
-    def cart(request): # view with all the OrderItems
-
-        if request.user.is_authenticated:
-            user = request.user
-            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-            order_items = crt.orderitem_set.all()
-        else:
-            order_items = []
-
-
-        ctx = {
-        "order_items" : order_items,
-        "crt_total_quantity": crt.order_total_quantity,
-        "crt_total_price": crt.order_total_price,
-        }
-        return render(request, "check/cart.html", ctx)
 
 
 
@@ -288,35 +244,3 @@ class Who:
         crt.delete()
 
         return redirect("shop")
-
-# class ProductApi:
-#     def change_cart(request):
-#         print(request.POST.get("foo"))
-#         product_id = request.body[1]
-#         action = request.body[3]
-#         print("method is being executed")
-#         print(product_id, action)
-#
-#         user = request.user
-#         if request.user.is_authenticated:
-#             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-#             order_items = crt.orderitem_set.all()
-#             order_item , created = order_items.get_or_create(
-#                 product = Product.objects.get(id = product_id),
-#                 defaults = {
-#                     "order":crt,
-#                     "product":Product.objects.filter(id = product_id)[0] ,
-#                     "quantity" : 0
-#                     }
-#                 )
-#             order_item.quantity += 1
-#             order_item.save()
-#
-#
-#             total_quantity = sum([item.quantity for item in order_items])
-#
-#             return JsonResponse(
-#             {
-#             "total_quantity" : total_quantity,
-#             }
-#             )
