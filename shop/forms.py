@@ -10,7 +10,7 @@ class UserForm(forms.ModelForm):
         labels = {"first_name" : "Your name"}
 
         widgets= {
-        'password' : forms.PasswordInput,
+        # 'password' : forms.PasswordInput,
         'first_name' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'email' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'password' :  forms.TextInput(attrs = {'class' : 'form-control'} ),

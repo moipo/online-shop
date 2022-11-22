@@ -116,15 +116,19 @@ class Shop:
 
                 return redirect("my_orders")
             else:
+
                 form = ShippingAddressForm(request.POST)
                 messages.error(request,"Input is incorrect")
+                ctx = {form:"form"}
                 return render(request,"checkout.html",ctx)
 
 
         shipping_address_form = ShippingAddressForm()
+        card_form = CardForm()
         ctx = {
         "shipping_address_form":shipping_address_form,
         "crt_total_quantity": Shop.get_cart_total(request),
+        "card_form": card_form,
         }
         return render(request,"checkout.html",ctx)
 
