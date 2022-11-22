@@ -20,15 +20,15 @@
     <!-- Checkout Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
-            <div class="col-lg-8">
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Billing Address</span></h5>
+            <div class="col-lg-12">
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Login</span></h5>
 
 
-                <div class="bg-light p-30 mb-5">
+                <div class="bg-light p-30 mb-5 text-center" >
                   Authentication is requeired to make an order or to see the history of your orders <br>
-
-                    <div class="row">
-                      <form action = "#" method = "POST"> {% csrf_token %}
+                  <br>
+                    <div class="row justify-content-center" >
+                      <form class = "form-group" action = "#" method = "POST"> {% csrf_token %}
                         {% if messages %}
                           {%for message in messages%}
                           <br>
@@ -38,18 +38,20 @@
                         {%endif%}
 
 
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-15 form-group">
                               <label>{{user_form.email.label_tag}}</label>
+
                               {{user_form.email}}
+
                         </div>
 
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-15 form-group">
                              <label>{{user_form.password.label_tag}}</label>
                              {{user_form.password}}
                         </div>
-
-                      <button type="submit" class = "btn btn-primary btn-lg" name="button">submit</button>
                       <a href="{%url 'registration'%}" class = "btn btn-primary btn-lg" >registration</a>
+                      <button type="submit" class = "btn btn-primary btn-lg" name="button">submit</button>
+
                       </form>
 
                         <!-- <div class="col-md-6 form-group">
