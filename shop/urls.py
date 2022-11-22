@@ -12,11 +12,14 @@ urlpatterns = [
     path('cart', Shop.cart, name = "cart"),
     path('checkout', Shop.checkout, name = "checkout"),
     path('registration', Who.registration, name = "registration"),
+    path('detail/<slug:product_slug>', Shop.detail, name = "detail"),
     path('logout_view', Who.logout_view, name = "logout_view"),
     path('login_view', Who.login_view, name = "login_view"),
     path('contact', Shop.contact, name = "contact"),
     path('my_orders', Shop.my_orders, name = "my_orders"),
-    path('detail/<slug:product_slug>', Shop.detail, name = "detail"),
+    path('order_detail/<int:order_id>', Shop.order_detail, name = "order_detail"),
+
+
     path('', Shop.index, name = "index"),
     path('shop', Shop.shop, name = "shop")
 

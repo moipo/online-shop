@@ -142,7 +142,7 @@ class Shop:
     def detail(request, product_slug):
         product = Product.objects.get(slug = product_slug)
 
-        
+
         ctx = {
         "product":product,
         "crt_total_quantity": Shop.get_cart_total(request),
@@ -182,6 +182,15 @@ class Shop:
         }
         return render(request,"orders/my_orders.html",ctx)
 
+    def order_detail(request, order_id):
+        order = Order.objects.get(id=order_id)
+        order_items = OrderItem.objects.all().filter(order = order)
+        ctx = {
+        "order":order,
+        "order_items" : order_items,
+        "crt_total_quantity": Shop.get_cart_total(request),
+        }
+        return render(request, "orders/order_detail.html", ctx)
 
 
 
