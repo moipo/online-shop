@@ -20,14 +20,14 @@
     <!-- Checkout Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
-            <div class="col-lg-8">
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Billing Address</span></h5>
+            <div class="col-lg-12">
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Registration</span></h5>
 
 
-                <div class="bg-light p-30 mb-5">
-                    Authentication is requeired to make an order or to see the history of your orders <br>
+                <div class="bg-light p-30 mb-5 text-center">
+                    Authentication is requeired to make an order or to see the history of your orders <br><br>
 
-                    <div class="row">
+                    <div class="row justify-content-center">
 
                       <form action = "#" method = "POST"> {% csrf_token %}
                         {%if error %}
@@ -38,7 +38,7 @@
 
                       {%for field in user_form.visible_fields%}
 
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-15 form-group">
                              <label>{{field.label_tag}}</label>
                              {{field.errors}}
                             <!-- <input class="form-control" type="text" placeholder="John">  -->
@@ -46,8 +46,9 @@
                         </div>
 
                       {%endfor%}
-                      <button type="submit" class = "btn btn-primary btn-lg" name="button">submit</button>
                       <a href="{%url 'login_view'%}" class = "btn btn-primary btn-lg" >I already have an account</a>
+                      <button type="submit" class = "btn btn-primary btn-lg" name="button">submit</button>
+
                       </form>
 
                         <!-- <div class="col-md-6 form-group">
