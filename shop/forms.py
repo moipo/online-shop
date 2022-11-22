@@ -4,6 +4,21 @@ from django.contrib.auth.models import User
 
 
 class UserForm(forms.ModelForm):
+    first_name = forms.CharField(max_length = 200,
+        required=True,
+        label = "Your name",
+        widget = forms.TextInput(
+            attrs = {'class' : 'form-control'})
+        )
+
+    email = forms.EmailField( max_length = 200,
+        required=True,
+        widget = forms.EmailInput(
+            attrs = {'class' : 'form-control'})
+        )
+
+
+
     class Meta:
         model = User
         fields = [ "first_name", "email", "password"]
@@ -13,13 +28,54 @@ class UserForm(forms.ModelForm):
         # 'password' : forms.PasswordInput,
         'first_name' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'email' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
-        'password' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
+        'password' :  forms.PasswordInput(attrs = {'class' : 'form-control'} ),
         }
+        fields_required = ["first_name", "email", "password"]
 
-        first_name = {
-        "required" : True
-        }
 
+# class UserRegistrationForm(forms.Form):
+#     first_name = forms.CharField()
+#     email = forms.EmailField(required = True)
+#     password = forms.CharField(
+#         label =
+#         widget  =forms.PasswordInput(
+#             attrs = {
+#                 "class" : "form-control"
+#             }
+#         )
+#     )
+
+
+
+
+
+
+
+    # first_name = forms.CharField(max_length=100)
+    # sender = forms.EmailField(required=True)
+
+    # class Meta:
+    #     model = User
+    #     fields = [ "first_name", "email", "password"]
+    #     labels = {"first_name" : "Your name"}
+    #
+    #     widgets= {
+    #     # 'password' : forms.PasswordInput,
+    #     'first_name' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
+    #     'email' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
+    #     'password' :  forms.PasswordInput(attrs = {'class' : 'form-control'} ),
+    #     }
+    #     fields_required = ["first_name", "email", "password"]
+
+        # first_name = {
+        # "required" : True
+        # }
+        # email = {
+        # "required" : True
+        # }
+        # password = {
+        # "required" : True
+        # }
 
 class ProductModelForm(forms.ModelForm):
     class Meta:

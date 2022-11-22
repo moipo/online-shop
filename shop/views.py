@@ -203,33 +203,35 @@ class Shop:
 class Who:
     def registration(request):
 
-
-
         if request.method == "POST":
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            user = authenticate(request, username = email, password = password)
-            if user is None:
-                new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
-                new_user.save()
-                login(request,new_user)
+            user_form = UserForm(request.POST)
+            if user_form.is_valid():
+                email = request.POST.get("email")
+                password = request.POST.get("password")
+                user = authenticate(request, username = email, password = password)
+                if user is None:
 
-                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                crt.customer = new_user
-                crt.save()
+                    new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
+                    new_user.save()
+                    login(request,new_user)
 
-                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                crt.delete()
+                    crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                    crt.customer = new_user
+                    crt.save()
 
-                return redirect("shop")
-            else:
-                user_form = UserForm(request.POST)
-                ctx = {
-                "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
-                "user_form" : user_form,
-                "crt_total_quantity": Shop.get_cart_total(request),
-                }
-                return render(request, "who/registration.html", ctx)
+                    crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                    crt.delete()
+
+                    return redirect("shop")
+
+
+            user_form = UserForm(request.POST)
+            ctx = {
+            "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
+            "user_form" : user_form,
+            "crt_total_quantity": Shop.get_cart_total(request),
+            }
+            return render(request, "who/registration.html", ctx)
 
         user_form = UserForm()
         ctx = {
