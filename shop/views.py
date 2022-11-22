@@ -91,7 +91,13 @@ class Shop:
 
     @login_required(login_url = "/login_view")
     def checkout(request):
+
+        crt = Order.objects.get(customer = request.user, status = "Cart")
+        order_total_price = crt.order_total_price
+
         if request.method == "POST":
+
+
             shipping_address_form = ShippingAddressForm(request.POST)
             card_form = CardForm(request.POST)
             if shipping_address_form.is_valid() and card_form.is_valid ():
@@ -124,9 +130,12 @@ class Shop:
                 messages.error(request,"All the fields must be filled")
                 ctx = {
                 "shipping_address_form": shipping_address_form,
+                "crt_total_quantity": Shop.get_cart_total(request),
                 "card_form" : card_form ,
+                "order_total_price" : order_total_price,
                 }
                 return render(request,"checkout.html",ctx)
+
 
 
         shipping_address_form = ShippingAddressForm()
@@ -134,6 +143,7 @@ class Shop:
         ctx = {
         "shipping_address_form":shipping_address_form,
         "crt_total_quantity": Shop.get_cart_total(request),
+        "order_total_price" : order_total_price,
         "card_form": card_form,
         }
         return render(request,"checkout.html",ctx)
