@@ -89,7 +89,7 @@ class Shop:
 
         return render(request,"cart.html",ctx)
 
-    @login_required(login_url = "/registration")
+    @login_required(login_url = "/login_view")
     def checkout(request):
         if request.method == "POST":
             shipping_address_form = ShippingAddressForm(request.POST)
@@ -179,7 +179,7 @@ class Shop:
         return render(request,"shop.html",ctx)
 
 
-    @login_required(login_url = "/registration")
+    @login_required(login_url = "/login_view")
     def my_orders(request):
         orders_made = Order.objects.exclude(status = "Cart").filter(customer = request.user)
         ctx = {
