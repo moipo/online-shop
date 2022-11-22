@@ -98,3 +98,11 @@ class ShippingAddress(models.Model):
 
     def __repr__(self):
         return self.address
+
+class Card(models.Model):
+    customer = models.ManyToManyField(User, blank = True, null = True)
+    order = models.ForeignKey(Order, blank = True, null = True, on_delete = models.SET_NULL)
+    name_on_card = models.CharField(max_length = 200, null = True)
+    number = models.CharField(max_length = 200, null = True)
+    expiration_date = models.CharField(max_length = 200, null = True)
+    cvv = models.CharField(max_length = 200, null = True)
