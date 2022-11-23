@@ -205,20 +205,6 @@ class Who:
         return render(request, "who/registration.html", ctx)
 
 
-            user_form = UserForm(request.POST)
-            ctx = {
-            "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
-            "user_form" : user_form,
-            "crt_total_quantity": Shop.get_cart_total(request),
-            }
-            return render(request, "who/registration.html", ctx)
-
-        user_form = UserForm()
-        ctx = {
-        "user_form" : user_form,
-        "crt_total_quantity": Shop.get_cart_total(request),
-        }
-        return render(request, "who/registration.html", ctx)
 
 
 
