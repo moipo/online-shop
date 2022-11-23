@@ -171,24 +171,22 @@ class Who:
 
         if request.method == "POST":
             user_form = UserForm(request.POST)
-            if user_form.is_valid():
-                email = request.POST.get("email")
-                password = request.POST.get("password")
-                user = authenticate(request, username = email, password = password)
-                if user is None:
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            email_doesnt_exist = email not in [u.email for u in User.objects.all()]
+            if user_form.is_valid() and email_doesnt_exist:
+                new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
+                new_user.save()
+                login(request,new_user)
 
-                    new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
-                    new_user.save()
-                    login(request,new_user)
+                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                crt.customer = new_user
+                crt.save()
 
-                    crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                    crt.customer = new_user
-                    crt.save()
+                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+                crt.delete()
 
-                    crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                    crt.delete()
-
-                    return redirect("shop")
+                return redirect("shop")
 
 
             user_form = UserForm(request.POST)
