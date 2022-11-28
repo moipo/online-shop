@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
+from datetime import datetime , timezone
 
 
 
@@ -122,8 +123,27 @@ class Shop:
         return render(request,"detail.html",ctx)
 
     def index(request):
+        crt_total_quantity = Shop.get_cart_total(request)
+        user = request.user
+        if not user.is_authenticated and crt_total_quantity!=0:
+
+            now = datetime.now(timezone.utc)
+
+            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+            order_items = crt.orderitem_set.all()
+            last_change = max([i.date_added for i in order_items])
+
+
+            diff = now-last_change
+            num = round(int(float(str(diff.total_seconds() * 1000)))/1000,0)
+            no_changes = int(num)
+            print(no_changes)
+            if no_changes > 900:
+                map(lambda x : x.delete(), order_items)
+                [i.delete() for i in order_items]
+
         ctx = {
-        "crt_total_quantity": Shop.get_cart_total(request),
+        "crt_total_quantity": crt_total_quantity,
         }
         return render(request,"index.html",ctx)
 
