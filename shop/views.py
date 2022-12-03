@@ -142,6 +142,7 @@ class Shop:
                 map(lambda x : x.delete(), order_items)
                 [i.delete() for i in order_items]
 
+        crt_total_quantity = Shop.get_cart_total(request)
         ctx = {
         "crt_total_quantity": crt_total_quantity,
         }
