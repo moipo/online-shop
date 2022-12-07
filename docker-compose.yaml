@@ -1,12 +1,12 @@
 version: "3.7"
 
 services:
-  # db:
-  #   image: postgres:10.1-alpine
+  db:
+    image: postgres:15.1-alpine
 
-    # environment:
-    #
-    #   POSTGRES_PASSWORD: a123
+    environment:
+
+      POSTGRES_PASSWORD: a123
 
   django_project:
     build: .
@@ -15,5 +15,5 @@ services:
       - .:/usr/src/online-shop
     ports:
       - 8000:8000
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
