@@ -28,31 +28,31 @@
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5>
                 <div class="bg-light p-4 mb-30">
 
-                    <form id = "checkbox_form" action = "#" method = "GET" > {% csrf_token %}
-                      <!--{# {{price_checkbox.as_p}} #} -->
+                    <form id = "checkbox_form" action = "#" method = "GET" >
+
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-all" type="checkbox" class="custom-control-input chbx" checked id="price-all" value = "all">
+                            <input name="price-0" type="checkbox" class="custom-control-input chbx" checked id="price-0" value = "all">
                             <label class="custom-control-label" for="price-all">All Price</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-1" type="checkbox" class="custom-control-input chbx" id="price-1" value = "0 100">
-                            <label class="custom-control-label" for="price-1">$0 - $100</label>
+                            <input name="price-1" type="checkbox" class="custom-control-input chbx" id="price-1" value = "1 300">
+                            <label class="custom-control-label" for="price-1">$1 - $300</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-2" type="checkbox" class="custom-control-input chbx" id="price-2" value = "100 200">
-                            <label class="custom-control-label" for="price-2">$100 - $200</label>
+                            <input name="price-2" type="checkbox" class="custom-control-input chbx" id="price-2" value = "300 1500">
+                            <label class="custom-control-label" for="price-2">$300 - $1500</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-3" type="checkbox" class="custom-control-input chbx" id="price-3" value = "200 300">
-                            <label class="custom-control-label" for="price-3">$200 - $300</label>
+                            <input name="price-3" type="checkbox" class="custom-control-input chbx" id="price-3" value = "1500 5000">
+                            <label class="custom-control-label" for="price-3">$1500 - $5000</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name ="price-4"  type="checkbox" class="custom-control-input chbx" id="price-4" value = "300 400">
-                            <label class="custom-control-label" for="price-4">$300 - $400</label>
+                            <input name ="price-4"  type="checkbox" class="custom-control-input chbx" id="price-4" value = "5000 9999999">
+                            <label class="custom-control-label" for="price-4">$5000+</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <!-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
@@ -60,7 +60,7 @@
                             <label class="custom-control-label" for="price-5">$400 - $500</label>
                             <span class="badge border font-weight-normal"></span>
                         </div> -->
-                        <button type="submit" name="button">submit</button>
+                        <!-- <button type="submit" name="button">submit</button> -->
                     </form>
                 </div>
                 <!-- Price End -->
@@ -195,7 +195,7 @@
 
 
 
-                    {%for product in all_products%}
+                    {%for product in selected_products%}
                     <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden">

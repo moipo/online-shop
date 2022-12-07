@@ -154,7 +154,6 @@ class Shop:
         return render(request,"index.html",ctx)
 
     def shop(request):
-        print(request.GET)
         user = request.user
 
         if request.user.is_authenticated:
@@ -163,12 +162,26 @@ class Shop:
             crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
 
 
-        all_products = Product.objects.all()
 
-        price_checkbox = Checkbox()
+        data = request.GET
+        if data:
+            
+            rng = ""
+            for i in range(1,5):
+                try:
+                    rng = data[f"price-{i}"]
+                except:
+                    continue
+            start, end = map(lambda x: int(x), rng.split())
+
+            all_products = Product.objects.all()
+            selected_products = all_products.filter(price__gte = start, price__lte = end)
+        else:
+            selected_products = Product.objects.all()
+
+
         ctx = {
-        'price_checkbox':price_checkbox,
-        "all_products" : all_products,
+        "selected_products" : selected_products,
         "crt_total_quantity": crt.order_total_quantity,
         }
         return render(request,"shop.html",ctx)
