@@ -27,37 +27,40 @@
                 <!-- Price Start -->
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5>
                 <div class="bg-light p-4 mb-30">
-                    <form id = "checkbox_form" action = "#">
+
+                    <form id = "checkbox_form" action = "#" method = "GET" > {% csrf_token %}
+                      <!--{# {{price_checkbox.as_p}} #} -->
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input chbx" checked id="price-all" value = "all">
+                            <input name="price-all" type="checkbox" class="custom-control-input chbx" checked id="price-all" value = "all">
                             <label class="custom-control-label" for="price-all">All Price</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input chbx" id="price-1" value = "0 100">
+                            <input name="price-1" type="checkbox" class="custom-control-input chbx" id="price-1" value = "0 100">
                             <label class="custom-control-label" for="price-1">$0 - $100</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input chbx" id="price-2" value = "100 200">
+                            <input name="price-2" type="checkbox" class="custom-control-input chbx" id="price-2" value = "100 200">
                             <label class="custom-control-label" for="price-2">$100 - $200</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input chbx" id="price-3" value = "200 300">
+                            <input name="price-3" type="checkbox" class="custom-control-input chbx" id="price-3" value = "200 300">
                             <label class="custom-control-label" for="price-3">$200 - $300</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input chbx" id="price-4" value = "300 400">
+                            <input name ="price-4"  type="checkbox" class="custom-control-input chbx" id="price-4" value = "300 400">
                             <label class="custom-control-label" for="price-4">$300 - $400</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input chbx" id="price-5" value = "400 500">
+                        <!-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+                            <input name= type="checkbox" class="custom-control-input chbx" id="price-5" value = "400 500">
                             <label class="custom-control-label" for="price-5">$400 - $500</label>
                             <span class="badge border font-weight-normal"></span>
-                        </div>
+                        </div> -->
+                        <button type="submit" name="button">submit</button>
                     </form>
                 </div>
                 <!-- Price End -->
@@ -555,7 +558,7 @@
         }
 
 
-    checkbox_form = document.getElementById("checkbox_form")
+
     // console.log(checkbox_form)
     // console.log(checkbox_form.getElementsByTagName("*"))
     // console.log(checkbox_form.childNodes)
@@ -574,10 +577,18 @@
           {
             checkboxes[j].checked = false;
           }
-
         }
+
+        var checkbox_form = document.getElementById("checkbox_form")
+        // console.log(checkbox_form.asd )
+        // console.log(checkbox_form)
+        checkbox_form.submit()
       })
     }
+
+
+
+
   </script>
 
     <!-- Shop End -->

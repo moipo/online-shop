@@ -82,3 +82,12 @@ class CardForm(forms.ModelForm):
         'expiration_date' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'cvv' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         }
+
+
+
+
+class Checkbox(forms.Form):
+    checkbox1 = forms.BooleanField()
+    checkbox2 = forms.BooleanField()
+    checkbox3 = forms.BooleanField()
+    checkbox4 = forms.BooleanField()

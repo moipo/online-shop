@@ -143,13 +143,18 @@ class Shop:
                 [i.delete() for i in order_items]
 
         crt_total_quantity = Shop.get_cart_total(request)
+
+
+
+
         ctx = {
+
         "crt_total_quantity": crt_total_quantity,
         }
         return render(request,"index.html",ctx)
 
     def shop(request):
-
+        print(request.GET)
         user = request.user
 
         if request.user.is_authenticated:
@@ -159,7 +164,10 @@ class Shop:
 
 
         all_products = Product.objects.all()
+
+        price_checkbox = Checkbox()
         ctx = {
+        'price_checkbox':price_checkbox,
         "all_products" : all_products,
         "crt_total_quantity": crt.order_total_quantity,
         }
