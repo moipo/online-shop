@@ -25,41 +25,41 @@
             <!-- Shop Sidebar Start -->
             <div class="col-lg-3 col-md-4">
                 <!-- Price Start -->
-                <!-- <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5> -->
-                <!-- <div class="bg-light p-4 mb-30">
-                    <form>
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5>
+                <div class="bg-light p-4 mb-30">
+                    <form id = "checkbox_form" action = "#">
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="price-all">
+                            <input type="checkbox" class="custom-control-input chbx" checked id="price-all" value = "all">
                             <label class="custom-control-label" for="price-all">All Price</label>
-                            <span class="badge border font-weight-normal">1000</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-1">
+                            <input type="checkbox" class="custom-control-input chbx" id="price-1" value = "0 100">
                             <label class="custom-control-label" for="price-1">$0 - $100</label>
-                            <span class="badge border font-weight-normal">150</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-2">
+                            <input type="checkbox" class="custom-control-input chbx" id="price-2" value = "100 200">
                             <label class="custom-control-label" for="price-2">$100 - $200</label>
-                            <span class="badge border font-weight-normal">295</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-3">
+                            <input type="checkbox" class="custom-control-input chbx" id="price-3" value = "200 300">
                             <label class="custom-control-label" for="price-3">$200 - $300</label>
-                            <span class="badge border font-weight-normal">246</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-4">
+                            <input type="checkbox" class="custom-control-input chbx" id="price-4" value = "300 400">
                             <label class="custom-control-label" for="price-4">$300 - $400</label>
-                            <span class="badge border font-weight-normal">145</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5">
+                            <input type="checkbox" class="custom-control-input chbx" id="price-5" value = "400 500">
                             <label class="custom-control-label" for="price-5">$400 - $500</label>
-                            <span class="badge border font-weight-normal">168</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
                     </form>
-                </div> -->
+                </div>
                 <!-- Price End -->
 
                 <!-- Color Start -->
@@ -145,7 +145,7 @@
 
 
                            <!-- 8 instead of 12 => sidebar -->
-            <div class="col-lg-12 col-md-8">
+            <div class="col-lg-8 col-md-8">
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
@@ -553,9 +553,32 @@
 
               })
         }
+
+
+    checkbox_form = document.getElementById("checkbox_form")
+    // console.log(checkbox_form)
+    // console.log(checkbox_form.getElementsByTagName("*"))
+    // console.log(checkbox_form.childNodes)
+    // console.log(checkbox_form[0])
+
+
+    var checkboxes = document.querySelectorAll(".chbx")
+    for (var i = 0; i < checkboxes.length; i++)
+    {
+      console.log("somedata")
+      checkboxes[i].addEventListener("change", function foo(e){
+
+        for(var j = 0; j < checkboxes.length; j++)
+        {
+          if (checkboxes[j]!=e.target)
+          {
+            checkboxes[j].checked = false;
+          }
+
+        }
+      })
+    }
   </script>
-
-
 
     <!-- Shop End -->
 {%endblock%}

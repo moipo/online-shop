@@ -4,7 +4,6 @@ from .models import *
 
 @api_view(["GET", "POST"])
 def api_change_cart(request):
-    print(type(request.data))
     product_id = request.data.get("product_id")
     action = request.data.get("action")
 
