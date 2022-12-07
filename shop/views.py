@@ -164,12 +164,16 @@ class Shop:
 
 
         data = request.GET
+
+        last_checkbox_name = "price-0"
         if data:
-            
+
             rng = ""
-            for i in range(1,5):
+
+            for i in range(0,5):
                 try:
                     rng = data[f"price-{i}"]
+                    last_checkbox_name = f"price-{i}"
                 except:
                     continue
             start, end = map(lambda x: int(x), rng.split())
@@ -180,7 +184,9 @@ class Shop:
             selected_products = Product.objects.all()
 
 
+
         ctx = {
+        "last_checkbox_name" : last_checkbox_name,
         "selected_products" : selected_products,
         "crt_total_quantity": crt.order_total_quantity,
         }

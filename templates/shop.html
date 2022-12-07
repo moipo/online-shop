@@ -30,11 +30,18 @@
 
                     <form id = "checkbox_form" action = "#" method = "GET" >
 
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-0" type="checkbox" class="custom-control-input chbx" checked id="price-0" value = "all">
+                        <!-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input name="price-0" type="checkbox" class="custom-control-input chbx" id="price-0" value = "1 9999999">
                             <label class="custom-control-label" for="price-all">All Price</label>
                             <span class="badge border font-weight-normal"></span>
+                        </div> -->
+
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input name="price-0" type="checkbox" class="custom-control-input chbx" id="price-0" value = "0 9999999">
+                            <label class="custom-control-label" for="price-0">All Price</label>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
+
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input name="price-1" type="checkbox" class="custom-control-input chbx" id="price-1" value = "1 300">
                             <label class="custom-control-label" for="price-1">$1 - $300</label>
@@ -508,14 +515,9 @@
               var product_id = this.dataset.product_id
               var action = this.dataset.action
 
-              // if(user=="AnonymousUser")
-              // {
-              //   console.log("User Not Logged In")
-              // }
-              // else
-              // {
+
               updateUserOrder(product_id, action)
-              // }
+
             })
           }
 
@@ -546,9 +548,7 @@
             })
 
             .then((response) =>{
-              // console.log("total_quantity: ", response  )
-              // document.querySelector(".total_amount").textContent = response.total_quantity
-              // location.reload()
+
               console.log("total_quantity: ", response  )
               document.querySelector(".total_amount").textContent = response.total_quantity
 
@@ -559,16 +559,13 @@
 
 
 
-    // console.log(checkbox_form)
-    // console.log(checkbox_form.getElementsByTagName("*"))
-    // console.log(checkbox_form.childNodes)
-    // console.log(checkbox_form[0])
 
 
     var checkboxes = document.querySelectorAll(".chbx")
     for (var i = 0; i < checkboxes.length; i++)
     {
-      console.log("somedata")
+
+
       checkboxes[i].addEventListener("change", function foo(e){
 
         for(var j = 0; j < checkboxes.length; j++)
@@ -580,13 +577,18 @@
         }
 
         var checkbox_form = document.getElementById("checkbox_form")
-        // console.log(checkbox_form.asd )
-        // console.log(checkbox_form)
         checkbox_form.submit()
       })
     }
 
+  for(var i = 0; i < checkboxes.length; i++)
+  {
 
+    if (checkboxes[i].name == "{{last_checkbox_name}}")
+    {
+    checkboxes[i].checked = true;
+    }
+  }
 
 
   </script>
