@@ -67,6 +67,9 @@
                         </div>
                         <!-- <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a> -->
                     </div>
+                    <div class="dollar">
+                      *
+                    </div>
 
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                       {% if user.is_authenticated%}
@@ -96,4 +99,19 @@
         </div>
     </div>
 </div>
+
+<script>
+  let url = `ws://${window.location.host}/ws/socket-server/`
+
+  const chatSocket = new WebSocket(url)
+
+  dollar = document.querySelector(".dollar")
+
+
+  chatSocket.onmessage = function(e){
+    let data = JSON.parse(e.data)
+    dollar.innerHTML = data["data"]
+    // console.log('Data:', )
+  }
+</script>
 <!-- Navbar End -->
