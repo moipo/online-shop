@@ -33,18 +33,6 @@ class UserForm(forms.ModelForm):
         fields_required = ["first_name", "email", "password"]
 
 
-# class UserRegistrationForm(forms.Form):
-#     first_name = forms.CharField()
-#     email = forms.EmailField(required = True)
-#     password = forms.CharField(
-#         label =
-#         widget  =forms.PasswordInput(
-#             attrs = {
-#                 "class" : "form-control"
-#             }
-#         )
-#     )
-
 
 
 

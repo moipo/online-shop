@@ -8,6 +8,10 @@ import json
 
 class ExchangeRateConsumer(AsyncConsumer):
     async def websocket_connect(self,event):
+
+
+        #This free API gives only 1000 requests/month
+        #This is why the imitation of frequent API calls is used here.
         a = 63.15
 
         try:
