@@ -253,10 +253,15 @@ class Shop:
 
         else:
 
+            page = request.GET.get('page', 1)
+            paginator = Paginator(selected_products, 11)
+            selected_products = paginator.page(page)
+
             ctx = {
             "last_checkbox_name" : last_checkbox_name,
             "selected_products" : selected_products,
             "crt_total_quantity": crt.order_total_quantity,
+            "paginator":paginator,
             }
 
 
