@@ -19,5 +19,5 @@ urlpatterns = [
     path('my_orders', Shop.my_orders, name = "my_orders"),
     path('order_detail/<int:order_id>', Shop.order_detail, name = "order_detail"),
     path('', Shop.index, name = "index"),
-    path('shop', Shop.populate_db, name = "shop")
+    path('shop', Shop.shop, name = "shop")
 ]

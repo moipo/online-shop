@@ -18,8 +18,8 @@ class ExchangeRateConsumer(AsyncConsumer):
 
         diff = (datetime.now(timezone.utc) - info.last_usd_datetime).total_seconds()
 
-        # api call every 20 minutes
-        if diff >= 10*20:
+        # new api call every 60 minutes
+        if diff >= 10*60:
             exchange_rate = await sync_to_async(get_api_data)()
             info.last_usd_exchange_rate = exchange_rate
             info.last_usd_datetime = await sync_to_async(datetime.now)(timezone.utc)
@@ -40,7 +40,7 @@ class ExchangeRateConsumer(AsyncConsumer):
             'type':'websocket.send',
             "text" : data,
             })
-            await asyncio.sleep(2.2)
+            await asyncio.sleep(2)
 
 
 def get_api_data():
@@ -53,4 +53,4 @@ def get_api_data():
         a = round(float(data["rates"]["RUB"]),2)
         return a
     except:
-        return 70
+        return WebsocketInfo.objects.get(id=1).last_usd_exchange_rate
