@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 from datetime import datetime , timezone
-
+from random import randint
 
 
 
@@ -211,7 +211,28 @@ class Shop:
         }
         return render(request, "orders/order_detail.html", ctx)
 
+    def populate_db(request):
+        print("data")
+        prdcts = Product.objects.all()
+        for _ in range(7):
 
+            templ_letters = "XZYMNDSWB"
+            letter_1 = template_letters[randint(10, 100)%len(template_letters)]
+            letter_2 = template_letters[randint(10, 100)%len(template_letters)]
+            number = str(randint(10, 100))
+
+            for pr in prdcts:
+                Product.objects.get_or_create(
+                    name = letter_1+letter_2+"-"+number,
+                    price = pr.price + rand(99, 7641),
+                    description = pr.description ,
+                    rating = pr.rating ,
+                    pic = pr.pic ,
+                    added_at = pr.added_at ,
+                    category = pr.category ,
+                    slug = pr.slug ,
+                )
+        return render(request, "shop.html", {})
 
 # def search(request, page_num=1, search_string_pag = None):
 #         if search_string_pag == "None":
