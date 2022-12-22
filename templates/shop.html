@@ -7,13 +7,39 @@
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
-            <div class="col-12">
+            <div class="col-4">
                 <nav class="breadcrumb bg-light mb-30">
                     <a class="breadcrumb-item text-dark" href="{%url 'index'%}">Home</a>
                     <a class="breadcrumb-item text-dark" href="{%url 'shop'%}">Shop</a>
                     <!-- <span class="breadcrumb-item active">Shop List</span> -->
                 </nav>
             </div>
+            <div class="col-6">
+            <form action="">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for products">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-transparent text-primary">
+                            <i class="fa fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </form>
+            </div>
+
+
+            <!-- <div class="col-lg-8 col-4 text-left bg-light"> -->
+                <!-- <form action="">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for products">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-transparent text-primary">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div> -->
         </div>
     </div>
     <!-- Breadcrumb End -->

@@ -15,7 +15,6 @@ from datetime import datetime , timezone
 
 
 
-
 class Shop:
 
     @staticmethod
@@ -211,6 +210,49 @@ class Shop:
         "crt_total_quantity": Shop.get_cart_total(request),
         }
         return render(request, "orders/order_detail.html", ctx)
+
+
+
+# def search(request, page_num=1, search_string_pag = None):
+#         if search_string_pag == "None":
+#             search_string_pag = None
+#
+#         search_string= request.GET.get('search_string')
+#
+#         if search_string is not None:
+#             page_num = 1
+#
+#         if search_string_pag is not None:
+#             search_string = search_string_pag
+#
+#         res = ""
+#         if search_string is not None:
+#             res = Product.objects.filter(
+#                 Q(name__icontains=search_string) | Q(model__icontains=search_string)
+#             )
+#
+#         else:
+#             res = Product.objects.all()
+#
+#
+#         search_string= request.GET.get('search_string')
+#         try:
+#             if search_string_pag != search_string:
+#                 res = Product.objects.filter(name__icontains=search_string)
+#                 )
+#         except: pass
+#         p = Paginator(res,10)
+#         page_obj = p.get_page(page_num)
+#
+#         if request.GET.get('search_string') is None:
+#             search_string = search_string_pag
+#
+#         ctx = {
+#         "page_obj":page_obj,
+#         "search_string":search_string,
+#         }
+#         return render(request, "general/search.html",ctx)
+
 
 
 
