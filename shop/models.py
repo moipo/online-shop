@@ -107,3 +107,7 @@ class Card(models.Model):
     number = models.CharField(max_length = 200, null = True)
     expiration_date = models.CharField(max_length = 200, null = True)
     cvv = models.CharField(max_length = 200, null = True)
+
+class WebsocketInfo(models.Model):
+    last_usd_exchange_rate = models.FloatField( blank = True, null = True)
+    last_usd_datetime = models.DateTimeField( blank = True, null = True)
