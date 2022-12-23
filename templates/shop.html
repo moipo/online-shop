@@ -522,7 +522,7 @@
 
                             {% for p in paginator.page_range %}
                               {% if previous_search_string%}
-                                <li class="page-item active"><a class="page-link" href="?page={{ p }}&search_string={{previous_search_string}}"">{{p}}</a></li>
+                                <li class="page-item active"><a class="page-link" href="?page={{ p }}&search_string={{previous_search_string}}&{{last_checkbox_name}}={{last_checkbox_range}}"">{{p}}</a></li>
                               {%else%}
                                 <li class="page-item active"><a class="page-link" href="?page={{ p }}">{{p}}</a></li>
                               {%endif%}

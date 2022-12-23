@@ -215,15 +215,15 @@ class Shop:
         try:
             if data:
 
-                rng = ""
+                last_checkbox_range = ""
 
                 for i in range(0,5):
                     try:
-                        rng = data[f"price-{i}"]
+                        last_checkbox_range = data[f"price-{i}"]
                         last_checkbox_name = f"price-{i}"
                     except:
                         continue
-                start, end = map(lambda x: int(x), rng.split())
+                start, end = map(lambda x: int(x), last_checkbox_range.split())
 
                 selected_products = Product.objects.all().filter(price__gte = start, price__lte = end)
             else:
@@ -232,6 +232,8 @@ class Shop:
             selected_products = Product.objects.all()
 
 
+
+        last_checkbox_range = "+".join(last_checkbox_range.split())
 
         if "search_string" in request.GET and request.GET['search_string']:
             page = request.GET.get('page', 1)
@@ -245,6 +247,7 @@ class Shop:
             ctx = {
 
             "last_checkbox_name" : last_checkbox_name,
+            "last_checkbox_range" : last_checkbox_range,
             "selected_products" : selected_products,
             "crt_total_quantity": crt.order_total_quantity,
             "paginator":paginator,
@@ -259,6 +262,7 @@ class Shop:
 
             ctx = {
             "last_checkbox_name" : last_checkbox_name,
+            "last_checkbox_range" : last_checkbox_range,
             "selected_products" : selected_products,
             "crt_total_quantity": crt.order_total_quantity,
             "paginator":paginator,
