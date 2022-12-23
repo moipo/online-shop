@@ -1,10 +1,14 @@
 # online-shop
 
-use the following commands to run this project properly with Docker and PostgreSQL (fixtures required):
+
+
+
+
+
+
+commands for running with PostgreSQL and docker-compose:
 
   docker-compose up
-
-  then write in a different console:
 
   docker-compose exec django_project python3 manage.py migrate
 

@@ -10,7 +10,7 @@ from datetime import datetime , timezone
 from random import randint
 from django.core.paginator import Paginator
 from django.utils.text import slugify
-from time import sleep, time
+from time import time
 
 
 
@@ -156,9 +156,6 @@ class Shop:
 
     def shop(request):
 
-        # print(request.GET)
-        # print("data")
-
         user = request.user
 
         if request.user.is_authenticated:
@@ -198,12 +195,7 @@ class Shop:
         return render(request,"shop.html",ctx)
 
     def shop(request):
-
-        print(request.GET)
-        # print("data")
-
         user = request.user
-
         if request.user.is_authenticated:
             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
         else:
@@ -217,9 +209,6 @@ class Shop:
         last_checkbox_range = ""
         try:
             if data:
-
-
-
                 for i in range(0,5):
                     try:
                         last_checkbox_range = data[f"price-{i}"]
@@ -298,35 +287,6 @@ class Shop:
         }
         return render(request, "orders/order_detail.html", ctx)
 
-    # def populate_db(request):
-    #     prdcts = Product.objects.all()
-    #     template_letters = "XZYMNDSWBLGQ"
-    #     for _ in range(7):
-    #         for pr in prdcts:
-    #             letter_1 = template_letters[randint(10, 100)%len(template_letters)]
-    #             letter_2 = template_letters[randint(10, 100)%len(template_letters)]
-    #             number = str(randint(10, 100))
-    #             Product.objects.get_or_create(
-    #                 name = letter_1+letter_2+"-"+number,
-    #                 price = pr.price + randint(99, 7641),
-    #                 description = pr.description ,
-    #                 rating = pr.rating ,
-    #                 pic = pr.pic ,
-    #                 added_at = pr.added_at ,
-    #                 category = pr.category ,
-    #                 slug = pr.slug ,
-    #             )
-    #     return render(request, "shop.html", {})
-
-    # def populate_db(request):
-    #     prdcts = Product.objects.all()
-    #     for pr in prdcts:
-    #         pr.slug = slugify(pr.name + "-" + str(time())[:10])
-    #         pr.save()
-    #         print(pr, pr.slug)
-    #         sleep(1)
-
-        # return render(request, "shop.html", {})
 
 
 
