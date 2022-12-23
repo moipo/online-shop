@@ -197,7 +197,7 @@ class Shop:
 
     def shop(request):
 
-        # print(request.GET)
+        print(request.GET)
         # print("data")
 
         user = request.user

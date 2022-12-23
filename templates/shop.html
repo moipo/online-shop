@@ -15,7 +15,7 @@
                 </nav>
             </div>
             <div class="col-6">
-            <form action="">
+            <form action="" class = "search_form">
                 <div class="input-group">
 
                     {%if previous_search_string%}
@@ -517,7 +517,7 @@
 
 
                           <ul class="pagination justify-content-center">
-                            
+
 
 
                             {% for p in paginator.page_range %}
@@ -545,13 +545,16 @@
         </div>
     </div>
 
+
 <style>
   .click_effect:active
   {
     transform: scale(0.92);
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
-  /* Lowering the shadow */
+
   }
+
+
   </style>
 
   <script>
@@ -626,7 +629,15 @@
         }
 
         var checkbox_form = document.getElementById("checkbox_form")
+
+
+        let search_form = document.querySelector(".search_form")
+        search_form_copy = search_form.cloneNode(true)
+        search_form_copy.search_string.style.display = "none";
+        checkbox_form.appendChild(search_form_copy.search_string)
         checkbox_form.submit()
+
+
       })
     }
 
