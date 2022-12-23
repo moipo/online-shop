@@ -53,4 +53,7 @@ def get_api_data():
         a = round(float(data["rates"]["RUB"]),2)
         return a
     except:
-        return WebsocketInfo.objects.get(id=1).last_usd_exchange_rate
+        try:
+            return WebsocketInfo.objects.get(id=1).last_usd_exchange_rate
+        except:
+            return 70

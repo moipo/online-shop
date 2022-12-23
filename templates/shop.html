@@ -26,7 +26,7 @@
 
                     <div class="input-group-append">
                         <span class="input-group-text bg-transparent text-primary">
-                            <button action = "submit"><i class="fa fa-search"></i><button/>
+                            <button class = "search_btn" action = "submit"><i class="fa fa-search"></i></button>
                         </span>
                     </div>
                 </div>
@@ -627,19 +627,20 @@
             checkboxes[j].checked = false;
           }
         }
-
-        var checkbox_form = document.getElementById("checkbox_form")
-
-
-        let search_form = document.querySelector(".search_form")
-        search_form_copy = search_form.cloneNode(true)
-        search_form_copy.search_string.style.display = "none";
-        checkbox_form.appendChild(search_form_copy.search_string)
-        checkbox_form.submit()
-
+        send_all_the_data()
 
       })
     }
+
+  function send_all_the_data()
+  {
+    var checkbox_form = document.getElementById("checkbox_form")
+    let search_form = document.querySelector(".search_form")
+    search_form_copy = search_form.cloneNode(true)
+    search_form_copy.search_string.style.display = "none";
+    checkbox_form.appendChild(search_form_copy.search_string)
+    checkbox_form.submit()
+  }
 
   for(var i = 0; i < checkboxes.length; i++)
   {
@@ -650,6 +651,21 @@
     }
   }
 
+
+  // search_form = document.querySelector(".search_form")
+  // var checkbox_form = document.getElementById("checkbox_form")
+  //
+  // let search_form = document.querySelector(".search_form")
+  // search_form_copy = search_form.cloneNode(true)
+  // search_form_copy.search_string.style.display = "none";
+  // checkbox_form.appendChild(search_form_copy.search_string)
+  // checkbox_form.submit()
+
+  search_btn = document.querySelector(".search_btn")
+  search_btn.addEventListener("click", function handler(e){
+    e.preventDefault()
+    send_all_the_data()
+  })
 
   </script>
 
