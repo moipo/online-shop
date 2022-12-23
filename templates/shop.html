@@ -25,9 +25,7 @@
                     {%endif%}
 
                     <div class="input-group-append">
-                        <span class="input-group-text bg-transparent text-primary">
-                            <button class = "search_btn" action = "submit"><i class="fa fa-search"></i></button>
-                        </span>
+                      <button class = "btn btn-primary  search_btn" action = "submit"><i class="fa fa-search"></i> </button>
                     </div>
                 </div>
             </form>
@@ -522,9 +520,13 @@
 
                             {% for p in paginator.page_range %}
                               {% if previous_search_string%}
-                                <li class="page-item active"><a class="page-link" href="?page={{ p }}&search_string={{previous_search_string}}&{{last_checkbox_name}}={{last_checkbox_range}}"">{{p}}</a></li>
+                                <li class="page-item ml-3">
+                                  <a class="page-link  pag_btn"  href="?page={{ p }}&search_string={{previous_search_string}}&{{last_checkbox_name}}={{last_checkbox_range}}" style = "color:black;">{{p}}</a>
+                                </li>
                               {%else%}
-                                <li class="page-item active"><a class="page-link" href="?page={{ p }}">{{p}}</a></li>
+                                <li class="page-item ml-3">
+                                  <a class="page-link  pag_btn" href="?page={{ p }}" style = "color:black;">{{p}}</a>
+                                </li>
                               {%endif%}
                             {% endfor %}
 
@@ -652,20 +654,14 @@
   }
 
 
-  // search_form = document.querySelector(".search_form")
-  // var checkbox_form = document.getElementById("checkbox_form")
-  //
-  // let search_form = document.querySelector(".search_form")
-  // search_form_copy = search_form.cloneNode(true)
-  // search_form_copy.search_string.style.display = "none";
-  // checkbox_form.appendChild(search_form_copy.search_string)
-  // checkbox_form.submit()
-
   search_btn = document.querySelector(".search_btn")
   search_btn.addEventListener("click", function handler(e){
     e.preventDefault()
     send_all_the_data()
   })
+
+pag_btns = document.querySelectorAll(".pag_btn")
+pag_btns[{{page}}-1].classList.add("bg-warning")
 
   </script>
 
