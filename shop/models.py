@@ -33,7 +33,7 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(str(time()) + "-" + self.name)
+            self.slug = slugify(self.name + "-" + str(time())[:10])
         super().save(*args, **kwargs)
 
     def __repr__():

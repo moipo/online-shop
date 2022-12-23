@@ -9,6 +9,8 @@ from django.contrib import messages
 from datetime import datetime , timezone
 from random import randint
 from django.core.paginator import Paginator
+from django.utils.text import slugify
+from time import sleep, time
 
 
 
@@ -152,48 +154,48 @@ class Shop:
         }
         return render(request,"index.html",ctx)
 
-    # def shop(request):
-    #
-    #     # print(request.GET)
-    #     # print("data")
-    #
-    #     user = request.user
-    #
-    #     if request.user.is_authenticated:
-    #         crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-    #     else:
-    #         crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-    #
-    #
-    #
-    #     data = request.GET
-    #
-    #     last_checkbox_name = "price-0"
-    #     if data:
-    #
-    #         rng = ""
-    #
-    #         for i in range(0,5):
-    #             try:
-    #                 rng = data[f"price-{i}"]
-    #                 last_checkbox_name = f"price-{i}"
-    #             except:
-    #                 continue
-    #         start, end = map(lambda x: int(x), rng.split())
-    #
-    #         all_products = Product.objects.all()
-    #         selected_products = all_products.filter(price__gte = start, price__lte = end)
-    #     else:
-    #         selected_products = Product.objects.all()
-    #
-    #
-    #
-    #     ctx = {
-    #     "last_checkbox_name" : last_checkbox_name,
-    #     "selected_products" : selected_products,
-    #     "crt_total_quantity": crt.order_total_quantity,
-    #     }
-    #     return render(request,"shop.html",ctx)
+    def shop(request):
+
+        # print(request.GET)
+        # print("data")
+
+        user = request.user
+
+        if request.user.is_authenticated:
+            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+        else:
+            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+
+
+
+        data = request.GET
+
+        last_checkbox_name = "price-0"
+        if data:
+
+            rng = ""
+
+            for i in range(0,5):
+                try:
+                    rng = data[f"price-{i}"]
+                    last_checkbox_name = f"price-{i}"
+                except:
+                    continue
+            start, end = map(lambda x: int(x), rng.split())
+
+            all_products = Product.objects.all()
+            selected_products = all_products.filter(price__gte = start, price__lte = end)
+        else:
+            selected_products = Product.objects.all()
+
+
+
+        ctx = {
+        "last_checkbox_name" : last_checkbox_name,
+        "selected_products" : selected_products,
+        "crt_total_quantity": crt.order_total_quantity,
+        }
+        return render(request,"shop.html",ctx)
 
     def shop(request):
 
@@ -316,7 +318,15 @@ class Shop:
     #             )
     #     return render(request, "shop.html", {})
 
+    # def populate_db(request):
+    #     prdcts = Product.objects.all()
+    #     for pr in prdcts:
+    #         pr.slug = slugify(pr.name + "-" + str(time())[:10])
+    #         pr.save()
+    #         print(pr, pr.slug)
+    #         sleep(1)
 
+        # return render(request, "shop.html", {})
 
 
 

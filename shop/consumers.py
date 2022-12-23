@@ -32,7 +32,7 @@ class ExchangeRateConsumer(AsyncConsumer):
         })
 
         while True:
-            await asyncio.sleep(0.7)
+            await asyncio.sleep(0.5)
             data = str(float('%.2f' % float(exchange_rate+randint(-9, 9)/100)))
             if data[-2] == ".": data += "0"
 

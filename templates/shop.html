@@ -19,7 +19,7 @@
                 <div class="input-group">
 
                     {%if previous_search_string%}
-                    <input name = "search_string" type="text" class="form-control" value = "{{previous_search_string}}" placeholder="{{previous_search_string}}">
+                    <input name = "search_string" type="text" class="form-control" value = "{{previous_search_string}}" >
                     {%else%}
                     <input name = "search_string" type="text" class="form-control" placeholder="Search for products">
                     {%endif%}
@@ -525,7 +525,7 @@
                                 </li>
                               {%else%}
                                 <li class="page-item ml-3">
-                                  <a class="page-link  pag_btn" href="?page={{ p }}" style = "color:black;">{{p}}</a>
+                                  <a class="page-link  pag_btn" href="?page={{ p }}&{{last_checkbox_name}}={{last_checkbox_range}}" style = "color:black;">{{p}}</a>
                                 </li>
                               {%endif%}
                             {% endfor %}
