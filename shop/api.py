@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import *
+from .utils import get_cart
 
 @api_view(["GET", "POST"])
 def api_change_cart(request):
@@ -9,10 +10,7 @@ def api_change_cart(request):
 
     user = request.user
 
-    if request.user.is_authenticated:
-        crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-    else:
-        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+    crt = get_cart(request)
     order_items = crt.orderitem_set.all()
 
 

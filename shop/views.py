@@ -11,361 +11,313 @@ from random import randint
 from django.core.paginator import Paginator
 from django.utils.text import slugify
 from time import time
+from .utils import get_cart
 
 
 
 
 
 
-class Shop:
 
-    @staticmethod
-    def get_cart_total(request):
-        user = request.user
-        if request.user.is_authenticated:
+
+
+def cart(request):
+
+    user = request.user
+
+    crt = get_cart(request)
+    order_items = crt.orderitem_set.all()
+
+
+    ctx = {
+    "order_items" : order_items,
+    "crt_total_quantity": crt.order_total_quantity,
+    "crt_total_price": crt.order_total_price,
+    }
+
+    return render(request,"cart.html",ctx)
+
+@login_required(login_url = "/login_view")
+def checkout(request):
+
+    crt = Order.objects.get(customer = request.user, status = "Cart")
+    order_total_price = crt.order_total_price
+
+    if request.method == "POST":
+
+
+        shipping_address_form = ShippingAddressForm(request.POST)
+        card_form = CardForm(request.POST)
+        if shipping_address_form.is_valid() and card_form.is_valid ():
+            print("forms_are_valid")
+            ship_addr = shipping_address_form.save()
+            card = card_form.save()
+
+            user = request.user
+            ship_addr.customer = user
+            card.customer.set(User.objects.filter(id = user.id))
+            order = get_object_or_404(Order, customer = user, status = "Cart")
+            order.status = "Pending"
+            order.save()
+            ship_addr.order = order
+            card.order = order
+            card.save()
+
+            ship_addr.save()
+
             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
+            crt.save()
+
+            ctx = {
+            "crt_total_quantity": get_cart(request).order_total_quantity,
+            }
+
+            return redirect("my_orders")
         else:
-            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-        return crt.order_total_quantity
 
-    def cart(request):
+            messages.error(request,"All the fields must be filled")
+            ctx = {
+            "shipping_address_form": shipping_address_form,
+            "card_form" : card_form ,
+            "order_total_price" : order_total_price,
+            }
+            return render(request,"checkout.html",ctx)
 
-        user = request.user
 
-        if request.user.is_authenticated:
-            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-        else:
-            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+
+    shipping_address_form = ShippingAddressForm()
+    card_form = CardForm()
+    ctx = {
+    "shipping_address_form":shipping_address_form,
+    "order_total_price" : order_total_price,
+    "card_form": card_form,
+    }
+    return render(request,"checkout.html",ctx)
+
+
+def contact(request):
+
+    return render(request,"contact.html",{})
+
+def detail(request, product_slug):
+    product = Product.objects.get(slug = product_slug)
+
+
+    ctx = {
+    "product":product,
+    }
+    return render(request,"detail.html",ctx)
+
+def index(request):
+    crt_total_quantity = get_cart(request).order_total_quantity
+    user = request.user
+    if not user.is_authenticated and crt_total_quantity!=0:
+
+        now = datetime.now(timezone.utc)
+
+        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
         order_items = crt.orderitem_set.all()
+        last_change = max([i.date_added for i in order_items])
 
 
-        ctx = {
-        "order_items" : order_items,
-        "crt_total_quantity": crt.order_total_quantity,
-        "crt_total_price": crt.order_total_price,
-        }
-
-        return render(request,"cart.html",ctx)
-
-    @login_required(login_url = "/login_view")
-    def checkout(request):
-
-        crt = Order.objects.get(customer = request.user, status = "Cart")
-        order_total_price = crt.order_total_price
-
-        if request.method == "POST":
+        diff = now-last_change
+        num = round(int(float(str(diff.total_seconds() * 1000)))/1000,0)
+        no_changes = int(num)
+        print(no_changes)
+        if no_changes > 900:
+            map(lambda x : x.delete(), order_items)
+            [i.delete() for i in order_items]
 
 
-            shipping_address_form = ShippingAddressForm(request.POST)
-            card_form = CardForm(request.POST)
-            if shipping_address_form.is_valid() and card_form.is_valid ():
-                print("forms_are_valid")
-                ship_addr = shipping_address_form.save()
-                card = card_form.save()
+    return render(request,"index.html",{})
 
-                user = request.user
-                ship_addr.customer = user
-                card.customer.set(User.objects.filter(id = user.id))
-                order = get_object_or_404(Order, customer = user, status = "Cart")
-                order.status = "Pending"
-                order.save()
-                ship_addr.order = order
-                card.order = order
-                card.save()
+def shop(request):
+    user = request.user
+    crt = get_cart(request)
+    data = request.GET
 
-                ship_addr.save()
+    last_checkbox_name = "price-0"
+    if data:
+        rng = ""
+        for i in range(0,5):
+            try:
+                rng = data[f"price-{i}"]
+                last_checkbox_name = f"price-{i}"
+            except:
+                continue
+        start, end = map(lambda x: int(x), rng.split())
 
-                crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-                crt.save()
-
-                ctx = {
-                "crt_total_quantity": Shop.get_cart_total(request),
-                }
-
-                return redirect("my_orders")
-            else:
-
-                messages.error(request,"All the fields must be filled")
-                ctx = {
-                "shipping_address_form": shipping_address_form,
-                "crt_total_quantity": Shop.get_cart_total(request),
-                "card_form" : card_form ,
-                "order_total_price" : order_total_price,
-                }
-                return render(request,"checkout.html",ctx)
+        all_products = Product.objects.all()
+        selected_products = all_products.filter(price__gte = start, price__lte = end)
+    else:
+        selected_products = Product.objects.all()
 
 
 
-        shipping_address_form = ShippingAddressForm()
-        card_form = CardForm()
-        ctx = {
-        "shipping_address_form":shipping_address_form,
-        "crt_total_quantity": Shop.get_cart_total(request),
-        "order_total_price" : order_total_price,
-        "card_form": card_form,
-        }
-        return render(request,"checkout.html",ctx)
+    ctx = {
+    "last_checkbox_name" : last_checkbox_name,
+    "selected_products" : selected_products,
+    "crt_total_quantity": crt.order_total_quantity,
+    }
+    return render(request,"shop.html",ctx)
 
+def shop(request):
+    user = request.user
+    crt = get_cart(request)
 
-    def contact(request):
-        ctx = {
-        "crt_total_quantity": Shop.get_cart_total(request),
-        }
-        return render(request,"contact.html",ctx)
+    data = request.GET
 
-    def detail(request, product_slug):
-        product = Product.objects.get(slug = product_slug)
-
-
-        ctx = {
-        "product":product,
-        "crt_total_quantity": Shop.get_cart_total(request),
-        }
-        return render(request,"detail.html",ctx)
-
-    def index(request):
-        crt_total_quantity = Shop.get_cart_total(request)
-        user = request.user
-        if not user.is_authenticated and crt_total_quantity!=0:
-
-            now = datetime.now(timezone.utc)
-
-            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-            order_items = crt.orderitem_set.all()
-            last_change = max([i.date_added for i in order_items])
-
-
-            diff = now-last_change
-            num = round(int(float(str(diff.total_seconds() * 1000)))/1000,0)
-            no_changes = int(num)
-            print(no_changes)
-            if no_changes > 900:
-                map(lambda x : x.delete(), order_items)
-                [i.delete() for i in order_items]
-
-        crt_total_quantity = Shop.get_cart_total(request)
-
-
-
-
-        ctx = {
-
-        "crt_total_quantity": crt_total_quantity,
-        }
-        return render(request,"index.html",ctx)
-
-    def shop(request):
-
-        user = request.user
-
-        if request.user.is_authenticated:
-            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-        else:
-            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-
-
-
-        data = request.GET
-
-        last_checkbox_name = "price-0"
+    last_checkbox_name = "price-0"
+    last_checkbox_range = ""
+    try:
         if data:
-
-            rng = ""
-
             for i in range(0,5):
                 try:
-                    rng = data[f"price-{i}"]
+                    last_checkbox_range = data[f"price-{i}"]
                     last_checkbox_name = f"price-{i}"
                 except:
                     continue
-            start, end = map(lambda x: int(x), rng.split())
+            start, end = map(lambda x: int(x), last_checkbox_range.split())
 
-            all_products = Product.objects.all()
-            selected_products = all_products.filter(price__gte = start, price__lte = end)
+            selected_products = Product.objects.all().filter(price__gte = start, price__lte = end)
         else:
             selected_products = Product.objects.all()
+    except:
+        selected_products = Product.objects.all()
 
 
+
+    last_checkbox_range = "+".join(last_checkbox_range.split())
+
+    if "search_string" in request.GET and request.GET['search_string']:
+        page = request.GET.get('page', 1)
+
+        search_string = request.GET['search_string']
+        products = selected_products.filter(name__icontains = search_string).order_by('name')
+        paginator = Paginator(products, 11)
+        selected_products = paginator.page(page)
+
+        ctx = {
+
+        "last_checkbox_name" : last_checkbox_name,
+        "last_checkbox_range" : last_checkbox_range,
+        "selected_products" : selected_products,
+        "crt_total_quantity": crt.order_total_quantity,
+        "paginator":paginator,
+        "previous_search_string":search_string,
+        "page" : page,
+        }
+
+    else:
+        page = request.GET.get('page', 1)
+        paginator = Paginator(selected_products, 11)
+        selected_products = paginator.page(page)
 
         ctx = {
         "last_checkbox_name" : last_checkbox_name,
+        "last_checkbox_range" : last_checkbox_range,
         "selected_products" : selected_products,
         "crt_total_quantity": crt.order_total_quantity,
+        "paginator":paginator,
+        "page" : page,
         }
-        return render(request,"shop.html",ctx)
 
-    def shop(request):
-        user = request.user
-        if request.user.is_authenticated:
-            crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
-        else:
+
+    return render(request,"shop.html",ctx)
+
+
+
+
+@login_required(login_url = "/login_view")
+def my_orders(request):
+    orders_made = Order.objects.exclude(status = "Cart").filter(customer = request.user)
+    ctx = {
+    "orders_made" : orders_made,
+    }
+    return render(request,"orders/my_orders.html",ctx)
+
+def order_detail(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order_items = OrderItem.objects.all().filter(order = order)
+    ctx = {
+    "order":order,
+    "order_items" : order_items,
+    }
+    return render(request, "orders/order_detail.html", ctx)
+
+
+
+
+
+
+def registration(request):
+
+    if request.method == "POST":
+        user_form = UserForm(request.POST)
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        email_doesnt_exist = email not in [u.email for u in User.objects.all()]
+        if user_form.is_valid() and email_doesnt_exist:
+            new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
+            new_user.save()
+            login(request,new_user)
+
             crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+            crt.customer = new_user
+            crt.save()
+
+            crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+            crt.delete()
+
+            return redirect("shop")
 
 
-
-        data = request.GET
-
-        last_checkbox_name = "price-0"
-        last_checkbox_range = ""
-        try:
-            if data:
-                for i in range(0,5):
-                    try:
-                        last_checkbox_range = data[f"price-{i}"]
-                        last_checkbox_name = f"price-{i}"
-                    except:
-                        continue
-                start, end = map(lambda x: int(x), last_checkbox_range.split())
-
-                selected_products = Product.objects.all().filter(price__gte = start, price__lte = end)
-            else:
-                selected_products = Product.objects.all()
-        except:
-            selected_products = Product.objects.all()
-
-
-
-        last_checkbox_range = "+".join(last_checkbox_range.split())
-
-        if "search_string" in request.GET and request.GET['search_string']:
-            page = request.GET.get('page', 1)
-
-            search_string = request.GET['search_string']
-            products = selected_products.filter(name__icontains = search_string).order_by('name')
-            paginator = Paginator(products, 11)
-            selected_products = paginator.page(page)
-
-
-            ctx = {
-
-            "last_checkbox_name" : last_checkbox_name,
-            "last_checkbox_range" : last_checkbox_range,
-            "selected_products" : selected_products,
-            "crt_total_quantity": crt.order_total_quantity,
-            "paginator":paginator,
-            "previous_search_string":search_string,
-            "page" : page,
-            }
-
-        else:
-
-            page = request.GET.get('page', 1)
-            paginator = Paginator(selected_products, 11)
-            selected_products = paginator.page(page)
-
-            ctx = {
-            "last_checkbox_name" : last_checkbox_name,
-            "last_checkbox_range" : last_checkbox_range,
-            "selected_products" : selected_products,
-            "crt_total_quantity": crt.order_total_quantity,
-            "paginator":paginator,
-            "page" : page,
-            }
-
-
-        return render(request,"shop.html",ctx)
-
-
-
-
-    @login_required(login_url = "/login_view")
-    def my_orders(request):
-        orders_made = Order.objects.exclude(status = "Cart").filter(customer = request.user)
+        user_form = UserForm(request.POST)
         ctx = {
-        "orders_made" : orders_made,
-        "crt_total_quantity": Shop.get_cart_total(request),
-        }
-        return render(request,"orders/my_orders.html",ctx)
-
-    def order_detail(request, order_id):
-        order = Order.objects.get(id=order_id)
-        order_items = OrderItem.objects.all().filter(order = order)
-        ctx = {
-        "order":order,
-        "order_items" : order_items,
-        "crt_total_quantity": Shop.get_cart_total(request),
-        }
-        return render(request, "orders/order_detail.html", ctx)
-
-
-
-
-
-class Who:
-    def registration(request):
-
-        if request.method == "POST":
-            user_form = UserForm(request.POST)
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            email_doesnt_exist = email not in [u.email for u in User.objects.all()]
-            if user_form.is_valid() and email_doesnt_exist:
-                new_user = User.objects.create_user(username = email, email = email, first_name = request.POST.get("first_name"), password = password)
-                new_user.save()
-                login(request,new_user)
-
-                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                crt.customer = new_user
-                crt.save()
-
-                crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-                crt.delete()
-
-                return redirect("shop")
-
-
-            user_form = UserForm(request.POST)
-            ctx = {
-            "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
-            "user_form" : user_form,
-            "crt_total_quantity": Shop.get_cart_total(request),
-            }
-            return render(request, "who/registration.html", ctx)
-
-        user_form = UserForm()
-        ctx = {
+        "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
         "user_form" : user_form,
-        "crt_total_quantity": Shop.get_cart_total(request),
         }
         return render(request, "who/registration.html", ctx)
 
+    user_form = UserForm()
+    ctx = {
+    "user_form" : user_form,
+    }
+    return render(request, "who/registration.html", ctx)
 
 
 
 
-    def login_view(request):
 
-        if request.method == "POST":
+def login_view(request):
 
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            user = authenticate(request , username =  email, password = password)
-            if user is not None:
-                login(request,user)
-                return redirect("cart")
-            else:
-                user_form = UserForm(request.POST)
-                messages.error(request, "Wrong password or email")
-                ctx = {
-                "crt_total_quantity": Shop.get_cart_total(request),
-                "user_form" : user_form,
-                }
-                return render(request, "who/login_view.html",ctx)
+    if request.method == "POST":
 
-        user_form = UserForm()
-        ctx = {
-        "user_form" : user_form,
-        "crt_total_quantity": Shop.get_cart_total(request),
-        }
-        return render(request, "who/login_view.html", ctx)
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        user = authenticate(request , username =  email, password = password)
+        if user is not None:
+            login(request,user)
+            return redirect("cart")
+        else:
+            user_form = UserForm(request.POST)
+            messages.error(request, "Wrong password or email")
+            ctx = {
+            "user_form" : user_form,
+            }
+            return render(request, "who/login_view.html",ctx)
 
+    user_form = UserForm()
+    ctx = {
+    "user_form" : user_form,
+    }
+    return render(request, "who/login_view.html", ctx)
 
 
-    def logout_view(request):
-        if request.user.is_authenticated:
-            logout(request)
 
-        crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
-        crt.delete()
-
-        return redirect("shop")
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
+    crt.delete()
+    return redirect("shop")
