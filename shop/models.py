@@ -28,9 +28,6 @@ class Product(models.Model):
     slug = models.SlugField(blank = True)
 
 
-
-
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name + "-" + str(time())[:10])
@@ -41,12 +38,6 @@ class Product(models.Model):
 
     def get_absolute_url():
         return f"detail/{self.slug}"
-
-
-
-
-
-
 
 
 

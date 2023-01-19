@@ -22,12 +22,9 @@ from .utils import get_cart
 
 
 def cart(request):
-
     user = request.user
-
     crt = get_cart(request)
     order_items = crt.orderitem_set.all()
-
 
     ctx = {
     "order_items" : order_items,
@@ -44,12 +41,9 @@ def checkout(request):
     order_total_price = crt.order_total_price
 
     if request.method == "POST":
-
-
         shipping_address_form = ShippingAddressForm(request.POST)
         card_form = CardForm(request.POST)
         if shipping_address_form.is_valid() and card_form.is_valid ():
-            print("forms_are_valid")
             ship_addr = shipping_address_form.save()
             card = card_form.save()
 
@@ -62,19 +56,16 @@ def checkout(request):
             ship_addr.order = order
             card.order = order
             card.save()
-
             ship_addr.save()
 
             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
             crt.save()
 
-            ctx = {
-            "crt_total_quantity": get_cart(request).order_total_quantity,
-            }
-
+            # ctx = {
+            # "crt_total_quantity": get_cart(request).order_total_quantity,
+            # }
             return redirect("my_orders")
         else:
-
             messages.error(request,"All the fields must be filled")
             ctx = {
             "shipping_address_form": shipping_address_form,
@@ -82,8 +73,6 @@ def checkout(request):
             "order_total_price" : order_total_price,
             }
             return render(request,"checkout.html",ctx)
-
-
 
     shipping_address_form = ShippingAddressForm()
     card_form = CardForm()
@@ -96,16 +85,11 @@ def checkout(request):
 
 
 def contact(request):
-
     return render(request,"contact.html",{})
 
 def detail(request, product_slug):
     product = Product.objects.get(slug = product_slug)
-
-
-    ctx = {
-    "product":product,
-    }
+    ctx = {"product":product}
     return render(request,"detail.html",ctx)
 
 def index(request):
@@ -113,13 +97,11 @@ def index(request):
     user = request.user
     if not user.is_authenticated and crt_total_quantity!=0:
 
-        now = datetime.now(timezone.utc)
-
         crt, created = Order.objects.get_or_create(customer = None, status = "Cart")
         order_items = crt.orderitem_set.all()
         last_change = max([i.date_added for i in order_items])
 
-
+        now = datetime.now(timezone.utc)
         diff = now-last_change
         num = round(int(float(str(diff.total_seconds() * 1000)))/1000,0)
         no_changes = int(num)
@@ -127,7 +109,6 @@ def index(request):
         if no_changes > 900:
             map(lambda x : x.delete(), order_items)
             [i.delete() for i in order_items]
-
 
     return render(request,"index.html",{})
 
@@ -151,8 +132,6 @@ def shop(request):
         selected_products = all_products.filter(price__gte = start, price__lte = end)
     else:
         selected_products = Product.objects.all()
-
-
 
     ctx = {
     "last_checkbox_name" : last_checkbox_name,
@@ -198,7 +177,6 @@ def shop(request):
         selected_products = paginator.page(page)
 
         ctx = {
-
         "last_checkbox_name" : last_checkbox_name,
         "last_checkbox_range" : last_checkbox_range,
         "selected_products" : selected_products,
@@ -222,9 +200,7 @@ def shop(request):
         "page" : page,
         }
 
-
     return render(request,"shop.html",ctx)
-
 
 
 
@@ -247,11 +223,7 @@ def order_detail(request, order_id):
 
 
 
-
-
-
 def registration(request):
-
     if request.method == "POST":
         user_form = UserForm(request.POST)
         email = request.POST.get("email")
@@ -277,22 +249,17 @@ def registration(request):
         "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
         "user_form" : user_form,
         }
-        return render(request, "who/registration.html", ctx)
+        return render(request, "login/registration.html", ctx)
 
     user_form = UserForm()
     ctx = {
     "user_form" : user_form,
     }
-    return render(request, "who/registration.html", ctx)
-
-
-
+    return render(request, "login/registration.html", ctx)
 
 
 def login_view(request):
-
     if request.method == "POST":
-
         email = request.POST.get("email")
         password = request.POST.get("password")
         user = authenticate(request , username =  email, password = password)
@@ -305,13 +272,13 @@ def login_view(request):
             ctx = {
             "user_form" : user_form,
             }
-            return render(request, "who/login_view.html",ctx)
+            return render(request, "login/login_view.html",ctx)
 
     user_form = UserForm()
     ctx = {
     "user_form" : user_form,
     }
-    return render(request, "who/login_view.html", ctx)
+    return render(request, "login/login_view.html", ctx)
 
 
 

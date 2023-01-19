@@ -2,7 +2,6 @@ from .models import Product, Order, ShippingAddress, Card
 from django import forms
 from django.contrib.auth.models import User
 
-
 class UserForm(forms.ModelForm):
     first_name = forms.CharField(max_length = 200,
         required=True,
@@ -17,34 +16,17 @@ class UserForm(forms.ModelForm):
             attrs = {'class' : 'form-control'})
         )
 
-
-
     class Meta:
         model = User
         fields = [ "first_name", "email", "password"]
         labels = {"first_name" : "Your name"}
 
         widgets= {
-    
         'first_name' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'email' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'password' :  forms.PasswordInput(attrs = {'class' : 'form-control'} ),
         }
         fields_required = ["first_name", "email", "password"]
-
-
-
-
-
-
-
-
-
-class ProductModelForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = '__all__'
-        exclude = ["slug"]
 
 class ShippingAddressForm(forms.ModelForm):
     class Meta:
@@ -58,7 +40,6 @@ class ShippingAddressForm(forms.ModelForm):
         'address' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         'zip_code' :  forms.TextInput(attrs = {'class' : 'form-control'} ),
         }
-
 
 class CardForm(forms.ModelForm):
     class Meta:
