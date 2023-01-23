@@ -7,10 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 from datetime import datetime , timezone
-from random import randint
 from django.core.paginator import Paginator
-from django.utils.text import slugify
-from time import time
 from .utils import get_cart
 
 
@@ -22,16 +19,13 @@ from .utils import get_cart
 
 
 def cart(request):
-    user = request.user
     crt = get_cart(request)
     order_items = crt.orderitem_set.all()
-
     ctx = {
     "order_items" : order_items,
     "crt_total_quantity": crt.order_total_quantity,
     "crt_total_price": crt.order_total_price,
     }
-
     return render(request,"cart.html",ctx)
 
 @login_required(login_url = "/login_view")
@@ -43,7 +37,7 @@ def checkout(request):
     if request.method == "POST":
         shipping_address_form = ShippingAddressForm(request.POST)
         card_form = CardForm(request.POST)
-        if shipping_address_form.is_valid() and card_form.is_valid ():
+        if shipping_address_form.is_valid() and card_form.is_valid():
             ship_addr = shipping_address_form.save()
             card = card_form.save()
 
@@ -60,10 +54,6 @@ def checkout(request):
 
             crt, created = Order.objects.get_or_create(customer = user, status = "Cart")
             crt.save()
-
-            # ctx = {
-            # "crt_total_quantity": get_cart(request).order_total_quantity,
-            # }
             return redirect("my_orders")
         else:
             messages.error(request,"All the fields must be filled")
@@ -113,7 +103,6 @@ def index(request):
     return render(request,"index.html",{})
 
 def shop(request):
-    user = request.user
     crt = get_cart(request)
     data = request.GET
 
@@ -141,9 +130,6 @@ def shop(request):
     return render(request,"shop.html",ctx)
 
 def shop(request):
-    user = request.user
-    crt = get_cart(request)
-
     data = request.GET
 
     last_checkbox_name = "price-0"
@@ -157,7 +143,6 @@ def shop(request):
                 except:
                     continue
             start, end = map(lambda x: int(x), last_checkbox_range.split())
-
             selected_products = Product.objects.all().filter(price__gte = start, price__lte = end)
         else:
             selected_products = Product.objects.all()
@@ -168,6 +153,11 @@ def shop(request):
 
     last_checkbox_range = "+".join(last_checkbox_range.split())
 
+    ctx = {
+    "last_checkbox_name" : last_checkbox_name,
+    "last_checkbox_range" : last_checkbox_range,
+    }
+
     if "search_string" in request.GET and request.GET['search_string']:
         page = request.GET.get('page', 1)
 
@@ -176,29 +166,20 @@ def shop(request):
         paginator = Paginator(products, 11)
         selected_products = paginator.page(page)
 
-        ctx = {
-        "last_checkbox_name" : last_checkbox_name,
-        "last_checkbox_range" : last_checkbox_range,
-        "selected_products" : selected_products,
-        "crt_total_quantity": crt.order_total_quantity,
-        "paginator":paginator,
-        "previous_search_string":search_string,
-        "page" : page,
-        }
+        ctx["selected_products"] = selected_products
+        ctx["paginator"] = paginator
+        ctx["page"] = page
+        ctx["previous_search_string"] = search_string
+        
 
     else:
         page = request.GET.get('page', 1)
         paginator = Paginator(selected_products, 11)
         selected_products = paginator.page(page)
-
-        ctx = {
-        "last_checkbox_name" : last_checkbox_name,
-        "last_checkbox_range" : last_checkbox_range,
-        "selected_products" : selected_products,
-        "crt_total_quantity": crt.order_total_quantity,
-        "paginator":paginator,
-        "page" : page,
-        }
+        
+        ctx["selected_products"] = selected_products
+        ctx["paginator"] = paginator
+        ctx["page"] = page
 
     return render(request,"shop.html",ctx)
 
@@ -246,7 +227,7 @@ def registration(request):
 
         user_form = UserForm(request.POST)
         ctx = {
-        "error" : "‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎Such email already exists",
+        "error" : "Such email already exists",
         "user_form" : user_form,
         }
         return render(request, "login/registration.html", ctx)
