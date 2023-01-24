@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from shop.models import Product, OrderItem, Order
-import json
 
 class TestViews(TestCase):
     
@@ -45,4 +44,4 @@ class TestViews(TestCase):
                 'order_item_total_price': 20
         })
         
-        print(response.data)
+       

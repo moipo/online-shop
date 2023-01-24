@@ -33,7 +33,7 @@ class Product(models.Model):
             self.slug = slugify(self.name) + "-" + str(time())[:10]
         super().save(*args, **kwargs)
 
-    def __repr__():
+    def __str__():
         return self.name
 
     def get_absolute_url():
@@ -66,7 +66,7 @@ class Order(models.Model):
     status = models.CharField(choices = STATUS, default = "Pending", max_length = 255)
     date_added = models.DateTimeField(auto_now_add = True, null = True)
 
-    def __repr__(self):
+    def __str__(self):
         return self.name
 
     @property

@@ -8,8 +8,8 @@ from django.conf import settings
 urlpatterns = [
     
     #need these to serve django admin static files
-    re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
-    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+    # re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    # re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     
     path('api/change_cart', api_change_cart, name = "api_change_cart"),
     path('cart', cart, name = "cart"),
