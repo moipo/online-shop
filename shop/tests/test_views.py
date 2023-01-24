@@ -12,8 +12,8 @@ class TestViews(TestCase):
         self.order_detail_url = reverse('order_detail', args = [tmp_order.id])
         self.api_change_cart_url = reverse('api_change_cart')
         
-        self.product_id = Product.objects.create(name = "product")
-        
+        self.product = Product.objects.create(name = "product", price = 20)
+        self.order = Order.objects.create(status = 'cart')
         
         
     def test_index_GET(self):
@@ -32,9 +32,17 @@ class TestViews(TestCase):
 
 
     def test_api_cart_post_adds_new_item(self):
-        OrderItem.objects.create()
+        OrderItem.objects.create(order = self.order, product = self.product)
         response = self.client.post(self.api_change_cart_url,
-            {"product_id":self.product_id,
-            "action":"add"
+            {"product_id":self.product.id,
+            "action":"add",
             })
-        print(response)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.data, {
+                'total_quantity': 1,
+                'total_price': 20, 
+                'order_item_quantity': 1,
+                'order_item_total_price': 20
+        })
+        
+        print(response.data)
