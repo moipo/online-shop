@@ -9,7 +9,8 @@ from django.contrib import messages
 from datetime import datetime , timezone
 from django.core.paginator import Paginator
 from .utils import get_cart
-
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 
 
 
@@ -74,8 +75,6 @@ def checkout(request):
     return render(request,"checkout.html",ctx)
 
 
-def contact(request):
-    return render(request,"contact.html",{})
 
 def detail(request, product_slug):
     product = Product.objects.get(slug = product_slug)
@@ -171,7 +170,6 @@ def shop(request):
         ctx["page"] = page
         ctx["previous_search_string"] = search_string
         
-
     else:
         page = request.GET.get('page', 1)
         paginator = Paginator(selected_products, 11)
@@ -193,14 +191,19 @@ def my_orders(request):
     }
     return render(request,"orders/my_orders.html",ctx)
 
+
 def order_detail(request, order_id):
-    order = Order.objects.get(id=order_id)
-    order_items = OrderItem.objects.all().filter(order = order)
-    ctx = {
-    "order":order,
-    "order_items" : order_items,
-    }
-    return render(request, "orders/order_detail.html", ctx)
+    order = get_object_or_404(Order, pk=order_id )
+    user = request.user
+    if user == order.customer and user.is_authenticated():
+        order_items = OrderItem.objects.all().filter(order = order)
+        ctx = {
+        "order":order,
+        "order_items" : order_items,
+        }
+        return render(request, "orders/order_detail.html", ctx)
+    else:
+        return HttpResponseForbidden()
 
 
 

@@ -25,12 +25,12 @@ class Product(models.Model):
     pic = models.ImageField(upload_to = "shop/%Y/%m", null = True, blank = True, default = "default_picture.png")
     added_at = models.DateTimeField(verbose_name = "Data of appearance", auto_now_add = True, null = True)
     category = models.CharField(max_length = 100, choices = CATEGORY)
-    slug = models.SlugField(blank = True)
+    slug = models.SlugField(blank = True, null = True, unique = True)
 
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name + "-" + str(time())[:10])
+            self.slug = slugify(self.name) + "-" + str(time())[:10]
         super().save(*args, **kwargs)
 
     def __repr__():
