@@ -8,13 +8,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('shop', '0011_card'),
+        ("shop", "0011_card"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='card',
-            name='customer',
+            model_name="card",
+            name="customer",
             field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
         ),
     ]

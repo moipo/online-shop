@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop', '0015_websocketinfo'),
+        ("shop", "0015_websocketinfo"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='websocketinfo',
-            name='last_usd_datetime',
+            model_name="websocketinfo",
+            name="last_usd_datetime",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='websocketinfo',
-            name='last_usd_exchange_rate',
+            model_name="websocketinfo",
+            name="last_usd_exchange_rate",
             field=models.FloatField(blank=True, null=True),
         ),
     ]

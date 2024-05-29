@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop', '0016_alter_websocketinfo_last_usd_datetime_and_more'),
+        ("shop", "0016_alter_websocketinfo_last_usd_datetime_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='slug',
+            model_name="product",
+            name="slug",
             field=models.SlugField(blank=True, unique=True),
         ),
     ]

@@ -6,16 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop', '0014_alter_orderitem_date_added'),
+        ("shop", "0014_alter_orderitem_date_added"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='WebsocketInfo',
+            name="WebsocketInfo",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_usd_exchange_rate', models.FloatField()),
-                ('last_usd_datetime', models.DateTimeField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_usd_exchange_rate", models.FloatField()),
+                ("last_usd_datetime", models.DateTimeField()),
             ],
         ),
     ]

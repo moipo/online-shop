@@ -7,27 +7,57 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Name_of_the_product')),
-                ('price', models.IntegerField()),
-                ('rating', models.IntegerField()),
-                ('category', models.CharField(choices=[('Tech', 'Tech'), ('New', 'New'), ('Popular', 'Popular')], max_length=100)),
-                ('slug', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, verbose_name="Name_of_the_product"
+                    ),
+                ),
+                ("price", models.IntegerField()),
+                ("rating", models.IntegerField()),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("Tech", "Tech"),
+                            ("New", "New"),
+                            ("Popular", "Popular"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                ("slug", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_created', models.DateTimeField(auto_now_add=True)),
-                ('products', models.ManyToManyField(to='shop.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date_created", models.DateTimeField(auto_now_add=True)),
+                ("products", models.ManyToManyField(to="shop.product")),
             ],
         ),
     ]

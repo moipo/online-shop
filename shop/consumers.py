@@ -1,25 +1,26 @@
-import json
-from channels.consumer import AsyncConsumer
 import asyncio
-from time import sleep
-from random import randint
-import requests
 import json
-from .models import WebsocketInfo
-from asgiref.sync import sync_to_async
 from datetime import datetime, timezone
+from random import randint
+
+import requests
+from asgiref.sync import sync_to_async
+from channels.consumer import AsyncConsumer
+
+from .models import WebsocketInfo
+
 
 class ExchangeRateConsumer(AsyncConsumer):
-    async def websocket_connect(self,event):
+    async def websocket_connect(self, event):
 
-        #This free API gives only 1000 requests/month
-        #This is why the imitation of frequent API calls is used here.
+        # This free API gives only 1000 requests/month
+        # This is why the imitation of frequent API calls is used here.
         info = await sync_to_async(WebsocketInfo.objects.get)(id=1)
 
         diff = (datetime.now(timezone.utc) - info.last_usd_datetime).total_seconds()
 
         # new api call every 7 minutes
-        if diff >= 7*60:
+        if diff >= 7 * 60:
             exchange_rate = await sync_to_async(get_api_data)()
             info.last_usd_exchange_rate = exchange_rate
             info.last_usd_datetime = await sync_to_async(datetime.now)(timezone.utc)
@@ -27,19 +28,20 @@ class ExchangeRateConsumer(AsyncConsumer):
         else:
             exchange_rate = info.last_usd_exchange_rate
 
-        await self.send({
-        'type':'websocket.accept'
-        })
+        await self.send({"type": "websocket.accept"})
 
         while True:
             await asyncio.sleep(0.4)
-            data = str(float('%.2f' % float(exchange_rate+randint(-9, 9)/100)))
-            if data[-2] == ".": data += "0"
-            
-            await self.send({
-            'type':'websocket.send',
-            "text" : data,
-            })
+            data = str(float("%.2f" % float(exchange_rate + randint(-9, 9) / 100)))
+            if data[-2] == ".":
+                data += "0"
+
+            await self.send(
+                {
+                    "type": "websocket.send",
+                    "text": data,
+                }
+            )
             await asyncio.sleep(2)
 
 
@@ -49,7 +51,7 @@ def get_api_data():
         app_id = "?app_id=230c6dfde9e04b19a187f83b726fdbc9"
         response = requests.get(latest_link + app_id)
         data = json.loads(response.text)
-        a = round(float(data["rates"]["RUB"]),2)
+        a = round(float(data["rates"]["RUB"]), 2)
         return a
     except:
         try:
