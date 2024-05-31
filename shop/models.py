@@ -76,7 +76,7 @@ class Order(models.Model):
         return self.name
 
     @property
-    def order_total_price(self):
+    def total_order_price(self):
         return sum(item.total_item_price for item in self.orderitem_set.all())
 
     @property

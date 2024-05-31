@@ -19,7 +19,7 @@ def cart(request):
     ctx = {
         "order_items": order_items,
         "crt_total_quantity": crt.order_total_quantity,
-        "crt_total_price": crt.order_total_price,
+        "crt_total_price": crt.total_order_price,
     }
     return render(request, "cart.html", ctx)
 
@@ -28,43 +28,40 @@ def cart(request):
 def checkout(request):
 
     crt = Order.objects.get(customer=request.user, status="Cart")
-    order_total_price = crt.order_total_price
+    total_order_price = crt.total_order_price
 
     if request.method == "POST":
         shipping_address_form = ShippingAddressForm(request.POST)
         card_form = CardForm(request.POST)
         if shipping_address_form.is_valid() and card_form.is_valid():
-            ship_addr = shipping_address_form.save()
-            card = card_form.save()
 
             user = request.user
-            ship_addr.customer = user
-            card.customer.set(User.objects.filter(id=user.id))
             order = get_object_or_404(Order, customer=user, status="Cart")
+
+            shipping_address = shipping_address_form.save(commit=False)
+            shipping_address.customer = user
+            shipping_address.order = order
+            shipping_address.save()
+
             order.status = "Pending"
             order.save()
-            ship_addr.order = order
-            card.order = order
-            card.save()
-            ship_addr.save()
 
-            crt, created = Order.objects.get_or_create(customer=user, status="Cart")
-            crt.save()
+            crt, _ = Order.objects.get_or_create(customer=user, status="Cart")
             return redirect("my_orders")
-        else:
-            messages.error(request, "All the fields must be filled")
-            ctx = {
-                "shipping_address_form": shipping_address_form,
-                "card_form": card_form,
-                "order_total_price": order_total_price,
-            }
-            return render(request, "checkout.html", ctx)
+
+        messages.error(request, "All the fields must be filled")
+        ctx = {
+            "shipping_address_form": shipping_address_form,
+            "card_form": card_form,
+            "total_order_price": total_order_price,
+        }
+        return render(request, "checkout.html", ctx)
 
     shipping_address_form = ShippingAddressForm()
     card_form = CardForm()
     ctx = {
         "shipping_address_form": shipping_address_form,
-        "order_total_price": order_total_price,
+        "total_order_price": total_order_price,
         "card_form": card_form,
     }
     return render(request, "checkout.html", ctx)
@@ -83,18 +80,20 @@ def index(request):
 
         crt, _ = Order.objects.get_or_create(customer=None, status="Cart")
         order_items = crt.orderitem_set.all()
-        last_change = max([i.date_added for i in order_items])
+        last_change = max(i.date_added for i in order_items)
 
         now = datetime.now(timezone.utc)
         diff = now - last_change
         num = round(int(float(str(diff.total_seconds() * 1000))) / 1000, 0)
         no_changes = int(num)
-        print(no_changes)
+
         if no_changes > 900:
             map(lambda x: x.delete(), order_items)
             [i.delete() for i in order_items]
 
     return render(request, "index.html", {})
+
+
 
 
 def shop(request):
