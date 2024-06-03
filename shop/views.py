@@ -8,9 +8,10 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
+from .enums import PriceFilters
 from .forms import *
 from .models import *
-from .utils import get_cart
+from .utils import get_cart, merge_visitor_and_user_carts
 
 
 def cart(request):
@@ -94,35 +95,8 @@ def index(request):
     return render(request, "index.html", {})
 
 
-
-
-def shop(request):
-    crt = get_cart(request)
-    data = request.GET
-
-    last_checkbox_name = "price-0"
-    if data:
-        rng = ""
-        for i in range(0, 5):
-            try:
-                rng = data[f"price-{i}"]
-                last_checkbox_name = f"price-{i}"
-            except:
-                continue
-        start, end = map(lambda x: int(x), rng.split())
-
-        all_products = Product.objects.all()
-        selected_products = all_products.filter(price__gte=start, price__lte=end)
-    else:
-        selected_products = Product.objects.all()
-
-    ctx = {
-        "last_checkbox_name": last_checkbox_name,
-        "selected_products": selected_products,
-        "crt_total_quantity": crt.order_total_quantity,
-    }
-    return render(request, "shop.html", ctx)
-
+# def shop(request):
+#     request.GET[PriceFilters.PRICE1.value]
 
 def shop(request):
     data = request.GET
@@ -207,25 +181,18 @@ def registration(request):
         user_form = UserForm(request.POST)
         email = request.POST.get("email")
         password = request.POST.get("password")
-        email_doesnt_exist = email not in [u.email for u in User.objects.all()]
-        if user_form.is_valid() and email_doesnt_exist:
+        user_is_new = not User.objects.filter(email=email).exists()
+        if user_form.is_valid() and user_is_new:
             new_user = User.objects.create_user(
                 username=email,
                 email=email,
                 first_name=request.POST.get("first_name"),
                 password=password,
             )
-            new_user.save()
+            merge_visitor_and_user_carts(request=request,user=new_user)
             login(request, new_user)
-
-            crt, created = Order.objects.get_or_create(customer=None, status="Cart")
-            crt.customer = new_user
-            crt.save()
-
-            crt, created = Order.objects.get_or_create(customer=None, status="Cart")
-            crt.delete()
-
             return redirect("shop")
+
 
         user_form = UserForm(request.POST)
         ctx = {
@@ -247,6 +214,7 @@ def login_view(request):
         password = request.POST.get("password")
         user = authenticate(request, username=email, password=password)
         if user is not None:
+            merge_visitor_and_user_carts(request=request, user=user)
             login(request, user)
             return redirect("cart")
         user_form = UserForm(request.POST)

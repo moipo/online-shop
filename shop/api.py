@@ -17,14 +17,17 @@ def api_change_cart(request):
         product=Product.objects.get(id=product_id),
         defaults={
             "order": crt,
-            "product": Product.objects.filter(id=product_id)[0],
+            "product": Product.objects.get(pk=product_id),
             "quantity": 0,
         },
     )
-    if action == "add":
-        order_item.quantity += 1
-    if action == "remove":
-        order_item.quantity -= 1
+
+    match action:
+        case "add":
+            order_item.quantity += 1
+        case "remove":
+            order_item.quantity -= 1
+
     order_item.save()
 
     order_item_quantity = order_item.quantity

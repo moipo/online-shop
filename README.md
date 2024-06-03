@@ -26,3 +26,14 @@ Commands for running with a PostgreSQL and docker-compose:
 You can also run tests:
 
     python manage.py test shop/tests
+
+
+Linters:
+
+black shop
+
+autoflake --remove-all-unused-imports -i -r shop
+
+isort shop
+
+pylint --load-plugins pylint_django --django-settings-module=online_shop.settings --ignore=migrations shop

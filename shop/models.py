@@ -71,6 +71,7 @@ class Order(models.Model):
     customer = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     status = models.CharField(choices=STATUS, default="Pending", max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, null=True)
+    session_key = models.CharField(max_length=36, default="")
 
     def __str__(self):
         return self.name
