@@ -15,10 +15,11 @@ def get_visitor_cart(request):
         request.session.save()
 
     session_key = request.session.session_key
-    cart, created = Order.objects.get_or_create(
+    cart, _ = Order.objects.get_or_create(
         session_key=session_key, status="Cart", customer=None
     )
     return cart
+
 
 def merge_visitor_and_user_carts(request, user):
     # adds visitor's cart items to a user cart and deletes a visitor cart

@@ -67,29 +67,29 @@
                         </div> -->
 
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-0" type="checkbox" class="custom-control-input chbx" id="price-0" value = "0 9999999">
-                            <label class="custom-control-label" for="price-0">All Price</label>
+                            <input name="price_filter" type="checkbox" class="custom-control-input chbx" id="price_all" value = "price_all">
+                            <label class="custom-control-label" for="price_all">All Prices</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
 
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-1" type="checkbox" class="custom-control-input chbx" id="price-1" value = "1 300">
-                            <label class="custom-control-label" for="price-1">$1 - $300</label>
+                            <input name="price_filter" type="checkbox" class="custom-control-input chbx" id="price_1_300" value = "price_1_300">
+                            <label class="custom-control-label" for="price_1_300">$1 - $300</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-2" type="checkbox" class="custom-control-input chbx" id="price-2" value = "300 1500">
-                            <label class="custom-control-label" for="price-2">$300 - $1500</label>
+                            <input name="price_filter" type="checkbox" class="custom-control-input chbx" id="price_300_1500" value = "price_300_1500">
+                            <label class="custom-control-label" for="price_300_1500">$300 - $1500</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name="price-3" type="checkbox" class="custom-control-input chbx" id="price-3" value = "1500 5000">
-                            <label class="custom-control-label" for="price-3">$1500 - $5000</label>
+                            <input name="price_filter" type="checkbox" class="custom-control-input chbx" id="price_1500_5000" value = "price_1500_5000">
+                            <label class="custom-control-label" for="price_1500_5000">$1500 - $5000</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input name ="price-4"  type="checkbox" class="custom-control-input chbx" id="price-4" value = "5000 9999999">
-                            <label class="custom-control-label" for="price-4">$5000+</label>
+                            <input name ="price_filter"  type="checkbox" class="custom-control-input chbx" id="price_5000" value = "price_5000">
+                            <label class="custom-control-label" for="price_5000">$5000+</label>
                             <span class="badge border font-weight-normal"></span>
                         </div>
                         <!-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
@@ -521,11 +521,11 @@
                             {% for p in paginator.page_range %}
                               {% if previous_search_string%}
                                 <li class="page-item ml-3">
-                                  <a class="page-link  pag_btn"  href="?page={{ p }}&search_string={{previous_search_string}}&{{last_checkbox_name}}={{last_checkbox_range}}" style = "color:black;">{{p}}</a>
+                                  <a class="page-link  pag_btn"  href="?page={{ p }}&search_string={{previous_search_string}}&price_filter={{price_filter}}" style = "color:black;">{{p}}</a>
                                 </li>
                               {%else%}
                                 <li class="page-item ml-3">
-                                  <a class="page-link  pag_btn" href="?page={{ p }}&{{last_checkbox_name}}={{last_checkbox_range}}" style = "color:black;">{{p}}</a>
+                                  <a class="page-link  pag_btn" href="?page={{ p }}&price_filter={{price_filter}}" style = "color:black;">{{p}}</a>
                                 </li>
                               {%endif%}
                             {% endfor %}
@@ -615,10 +615,7 @@
     var checkboxes = document.querySelectorAll(".chbx")
     for (var i = 0; i < checkboxes.length; i++)
     {
-
-
       checkboxes[i].addEventListener("change", function foo(e){
-
         for(var j = 0; j < checkboxes.length; j++)
         {
           if (checkboxes[j]!=e.target)
@@ -627,7 +624,6 @@
           }
         }
         send_all_the_data()
-
       })
     }
 
@@ -643,13 +639,11 @@
 
   for(var i = 0; i < checkboxes.length; i++)
   {
-
-    if (checkboxes[i].name == "{{last_checkbox_name}}")
+    if (checkboxes[i].id == "{{price_filter}}")
     {
     checkboxes[i].checked = true;
     }
   }
-
 
   search_btn = document.querySelector(".search_btn")
   search_btn.addEventListener("click", function handler(e){
@@ -662,5 +656,4 @@ pag_btns[{{page}}-1].classList.add("bg-warning")
 
   </script>
 
-    <!-- Shop End -->
 {%endblock%}

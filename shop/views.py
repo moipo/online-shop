@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from datetime import datetime, timezone
 
 from django.contrib import messages
@@ -8,7 +9,6 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .enums import PriceFilters
 from .forms import *
 from .models import *
 from .utils import get_cart, merge_visitor_and_user_carts
@@ -96,60 +96,101 @@ def index(request):
 
 
 # def shop(request):
-#     request.GET[PriceFilters.PRICE1.value]
+#     data = request.GET
+#
+#     last_checkbox_name = "price-0"
+#     last_checkbox_range = ""
+#     try:
+#         if data:
+#             for i in range(0, 5):
+#                 try:
+#                     last_checkbox_range = data[f"price-{i}"]
+#                     last_checkbox_name = f"price-{i}"
+#                 except:
+#                     continue
+#             start, end = map(lambda x: int(x), last_checkbox_range.split())
+#             selected_products = Product.objects.all().filter(
+#                 price__gte=start, price__lte=end
+#             )
+#         else:
+#             selected_products = Product.objects.all()
+#     except:
+#         selected_products = Product.objects.all()
+#
+#     last_checkbox_range = "+".join(last_checkbox_range.split())
+#
+#     ctx = {
+#         "last_checkbox_name": last_checkbox_name,
+#         "last_checkbox_range": last_checkbox_range,
+#     }
+#
+#     if "search_string" in request.GET and request.GET["search_string"]:
+#         page = request.GET.get("page", 1)
+#
+#         search_string = request.GET["search_string"]
+#         products = selected_products.filter(name__icontains=search_string).order_by(
+#             "name"
+#         )
+#         paginator = Paginator(products, 11)
+#         selected_products = paginator.page(page)
+#
+#         ctx["selected_products"] = selected_products
+#         ctx["paginator"] = paginator
+#         ctx["page"] = page
+#         ctx["previous_search_string"] = search_string
+#
+#     else:
+#         page = request.GET.get("page", 1)
+#         paginator = Paginator(selected_products, 11)
+#         selected_products = paginator.page(page)
+#
+#         ctx["selected_products"] = selected_products
+#         ctx["paginator"] = paginator
+#         ctx["page"] = page
+#
+#     return render(request, "shop.html", ctx)
+
 
 def shop(request):
     data = request.GET
 
-    last_checkbox_name = "price-0"
-    last_checkbox_range = ""
-    try:
-        if data:
-            for i in range(0, 5):
-                try:
-                    last_checkbox_range = data[f"price-{i}"]
-                    last_checkbox_name = f"price-{i}"
-                except:
-                    continue
-            start, end = map(lambda x: int(x), last_checkbox_range.split())
-            selected_products = Product.objects.all().filter(
-                price__gte=start, price__lte=end
-            )
-        else:
-            selected_products = Product.objects.all()
-    except:
-        selected_products = Product.objects.all()
+    price_filter: str = data.get("price_filter", "price_all")
+    search_string: str = data.get("search_string", "")
+    page: int | None = data.get("page", 1)
 
-    last_checkbox_range = "+".join(last_checkbox_range.split())
+    price_range_by_price_filter: Mapping[str, tuple(int | None, int | None)] = {
+        "price_all": (None, None),
+        "price_1_300": (1, 300),
+        "price_300_1500": (300, 1500),
+        "price_1500_5000": (1500, 5000),
+        "price_5000": (5000, None),
+    }
+    start_price, end_price = price_range_by_price_filter[price_filter]
+
+    filter_kwargs: dict = {}
+
+    if start_price:
+        filter_kwargs["price__gte"] = start_price
+    if end_price:
+        filter_kwargs["price__lte"] = end_price
+
+    if search_string:
+        filter_kwargs["name__icontains"] = search_string
+
+    filtered_products = Product.objects.filter(**filter_kwargs)
+
+    paginator = Paginator(filtered_products, 11)
+    selected_products = paginator.page(page)
 
     ctx = {
-        "last_checkbox_name": last_checkbox_name,
-        "last_checkbox_range": last_checkbox_range,
-    }
+           "selected_products": selected_products,
+           "paginator": paginator,
+           "page": page,
+           "price_filter": price_filter,
+           }
 
-    if "search_string" in request.GET and request.GET["search_string"]:
-        page = request.GET.get("page", 1)
-
-        search_string = request.GET["search_string"]
-        products = selected_products.filter(name__icontains=search_string).order_by(
-            "name"
-        )
-        paginator = Paginator(products, 11)
-        selected_products = paginator.page(page)
-
-        ctx["selected_products"] = selected_products
-        ctx["paginator"] = paginator
-        ctx["page"] = page
+    if search_string:
         ctx["previous_search_string"] = search_string
-
-    else:
-        page = request.GET.get("page", 1)
-        paginator = Paginator(selected_products, 11)
-        selected_products = paginator.page(page)
-
-        ctx["selected_products"] = selected_products
-        ctx["paginator"] = paginator
-        ctx["page"] = page
 
     return render(request, "shop.html", ctx)
 
@@ -189,10 +230,9 @@ def registration(request):
                 first_name=request.POST.get("first_name"),
                 password=password,
             )
-            merge_visitor_and_user_carts(request=request,user=new_user)
+            merge_visitor_and_user_carts(request=request, user=new_user)
             login(request, new_user)
             return redirect("shop")
-
 
         user_form = UserForm(request.POST)
         ctx = {
