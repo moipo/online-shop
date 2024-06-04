@@ -1,8 +1,6 @@
 # online-shop
 
-Shop of electronics, that gets info about the current exchange rate and shows it via a backend websocket. It also includes multiple product filters, authentication, pagination and much more.   
-
-
+Ecommerce store of tech
 
 
 Run the project in a container:
@@ -23,17 +21,28 @@ Commands for running with a PostgreSQL and docker-compose:
 
 
 
-You can also run tests:
+Static analysis tools::
 
-    python manage.py test shop/tests
+    black shop
+
+    autoflake --remove-all-unused-imports -i -r shop
+
+    isort shop
+
+    pylint --load-plugins pylint_django --django-settings-module=online_shop.settings --ignore=migrations shop
 
 
-Linters:
 
-black shop
+Frontend part of the project was designed by HTMLcodex:
 
-autoflake --remove-all-unused-imports -i -r shop
+  =>  Template Name    : MultiShop - Online Shop Website Template
 
-isort shop
+  =>  Template Link    : https://htmlcodex.com/online-shop-website-template
 
-pylint --load-plugins pylint_django --django-settings-module=online_shop.settings --ignore=migrations shop
+  =>  Template License : https://htmlcodex.com/license (or read the LICENSE.txt file)
+
+  =>  Template Author  : HTML Codex
+
+  =>  Author Website   : https://htmlcodex.com
+
+  =>  About HTML Codex : HTML Codex is one of the top creators and publishers of Free HTML templates, HTML landing pages, HTML email templates and HTML snippets in the world. Read more at ( https://htmlcodex.com/about-us )
