@@ -25,9 +25,3 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 admin.site.register(OrderItem, OrderItemAdmin)
 
-
-class WebsocketInfoAdmin(admin.ModelAdmin):
-    list_display = [x.name for x in WebsocketInfo._meta.fields]
-
-
-admin.site.register(WebsocketInfo, WebsocketInfoAdmin)
