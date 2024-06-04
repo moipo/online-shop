@@ -105,19 +105,4 @@
     </div>
 </div>
 
-<script>
-  let url = `ws://${window.location.host}/ws/socket-server/`
-
-  const chatSocket = new WebSocket(url)
-
-  dollar = document.querySelector(".dollar")
-
-
-  chatSocket.onmessage = function(e){
-    console.log(e.data)
-    dollar.innerHTML = e.data
-  }
-
-
-</script>
 <!-- Navbar End -->

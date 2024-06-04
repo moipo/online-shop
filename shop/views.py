@@ -204,11 +204,10 @@ def my_orders(request):
     return render(request, "orders/my_orders.html", ctx)
 
 
-@login_required(login_url="/login_view")
 def order_detail(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
     user = request.user
-    if user == order.customer and user.is_authenticated():
+    if user == order.customer and user.is_authenticated:
         order_items = OrderItem.objects.all().filter(order=order)
         ctx = {
             "order": order,
