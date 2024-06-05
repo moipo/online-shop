@@ -1,12 +1,13 @@
-from django.urls import path
+from django.urls import path, re_path
+from django.views.static import serve
 
+from online_shop import settings
 from .api import api_change_cart
 from .views import *
 
 urlpatterns = [
-    # paths for serving django static files
-    # re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
-    # re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+    re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     path("api/change_cart", api_change_cart, name="api_change_cart"),
     path("cart", cart, name="cart"),
     path("checkout", checkout, name="checkout"),
