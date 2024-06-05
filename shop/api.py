@@ -22,11 +22,10 @@ def api_change_cart(request):
         },
     )
 
-    match action:
-        case "add":
-            order_item.quantity += 1
-        case "remove":
-            order_item.quantity -= 1
+    if action == "add":
+        order_item.quantity += 1
+    if action == "remove":
+        order_item.quantity -= 1
 
     order_item.save()
 

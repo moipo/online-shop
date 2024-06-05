@@ -1,0 +1,6 @@
+Django
+djangorestframework
+Pillow
+pytz
+sqlparse
+asgiref
