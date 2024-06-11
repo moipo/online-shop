@@ -1,6 +1,7 @@
-api_requests.py
 .idea
 .env
+myvenv
+.myvenv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
