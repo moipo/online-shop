@@ -198,9 +198,7 @@ def login_view(request):
     return render(request, "login/login_view.html", ctx)
 
 
+@login_required(login_url="/login_view")
 def logout_view(request):
-    if request.user.is_authenticated:
-        logout(request)
-    crt, _ = Order.objects.get_or_create(customer=None, status="Cart")
-    crt.delete()
+    logout(request)
     return redirect("shop")
