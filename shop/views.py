@@ -75,80 +75,7 @@ def detail(request, product_slug):
 
 
 def index(request):
-    crt_total_quantity = get_cart(request).order_total_quantity
-    user = request.user
-    if not user.is_authenticated and crt_total_quantity != 0:
-
-        crt, _ = Order.objects.get_or_create(customer=None, status="Cart")
-        order_items = crt.orderitem_set.all()
-        last_change = max(i.date_added for i in order_items)
-
-        now = datetime.now(timezone.utc)
-        diff = now - last_change
-        num = round(int(float(str(diff.total_seconds() * 1000))) / 1000, 0)
-        no_changes = int(num)
-
-        if no_changes > 900:
-            map(lambda x: x.delete(), order_items)
-            [i.delete() for i in order_items]
-
     return render(request, "index.html", {})
-
-
-# def shop(request):
-#     data = request.GET
-#
-#     last_checkbox_name = "price-0"
-#     last_checkbox_range = ""
-#     try:
-#         if data:
-#             for i in range(0, 5):
-#                 try:
-#                     last_checkbox_range = data[f"price-{i}"]
-#                     last_checkbox_name = f"price-{i}"
-#                 except:
-#                     continue
-#             start, end = map(lambda x: int(x), last_checkbox_range.split())
-#             selected_products = Product.objects.all().filter(
-#                 price__gte=start, price__lte=end
-#             )
-#         else:
-#             selected_products = Product.objects.all()
-#     except:
-#         selected_products = Product.objects.all()
-#
-#     last_checkbox_range = "+".join(last_checkbox_range.split())
-#
-#     ctx = {
-#         "last_checkbox_name": last_checkbox_name,
-#         "last_checkbox_range": last_checkbox_range,
-#     }
-#
-#     if "search_string" in request.GET and request.GET["search_string"]:
-#         page = request.GET.get("page", 1)
-#
-#         search_string = request.GET["search_string"]
-#         products = selected_products.filter(name__icontains=search_string).order_by(
-#             "name"
-#         )
-#         paginator = Paginator(products, 11)
-#         selected_products = paginator.page(page)
-#
-#         ctx["selected_products"] = selected_products
-#         ctx["paginator"] = paginator
-#         ctx["page"] = page
-#         ctx["previous_search_string"] = search_string
-#
-#     else:
-#         page = request.GET.get("page", 1)
-#         paginator = Paginator(selected_products, 11)
-#         selected_products = paginator.page(page)
-#
-#         ctx["selected_products"] = selected_products
-#         ctx["paginator"] = paginator
-#         ctx["page"] = page
-#
-#     return render(request, "shop.html", ctx)
 
 
 def shop(request):
@@ -271,9 +198,7 @@ def login_view(request):
     return render(request, "login/login_view.html", ctx)
 
 
+@login_required(login_url="/login_view")
 def logout_view(request):
-    if request.user.is_authenticated:
-        logout(request)
-    crt, _ = Order.objects.get_or_create(customer=None, status="Cart")
-    crt.delete()
+    logout(request)
     return redirect("shop")
