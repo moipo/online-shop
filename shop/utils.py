@@ -35,6 +35,7 @@ def merge_visitor_and_user_carts(request, user):
             user_cart_item = user_cart_items.get(product=item.product)
             user_cart_item.quantity += item.quantity
             user_cart_item.save()
-        item.order = user_cart
-        item.save()
+        else:
+            item.order = user_cart
+            item.save()
     visitor_cart.delete()
