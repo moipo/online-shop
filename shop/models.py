@@ -1,10 +1,9 @@
-from time import time
+from uuid import uuid4
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
-
-# Create your models here.
 
 
 class Product(models.Model):
@@ -35,14 +34,15 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name) + "-" + str(time())[:10]
+            product_slug = slugify(self.name) or "product"
+            self.slug = f"{product_slug}-{uuid4().hex[:10]}"
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return f"detail/{self.slug}"
+        return reverse("detail", kwargs={"product_slug": self.slug})
 
 
 class OrderItem(models.Model):
@@ -55,7 +55,9 @@ class OrderItem(models.Model):
 
     @property
     def total_item_price(self):
-        return self.product.price * self.quantity
+        if self.product is None:
+            return 0
+        return (self.product.price or 0) * (self.quantity or 0)
 
 
 class Order(models.Model):
@@ -74,15 +76,18 @@ class Order(models.Model):
     session_key = models.CharField(max_length=36, default="")
 
     def __str__(self):
-        return self.name
+        return f"Order #{self.pk}"
 
     @property
     def total_order_price(self):
-        return sum(item.total_item_price for item in self.orderitem_set.all())
+        return sum(
+            item.total_item_price
+            for item in self.orderitem_set.select_related("product").all()
+        )
 
     @property
     def order_total_quantity(self):
-        return sum(item.quantity for item in self.orderitem_set.all())
+        return sum(item.quantity or 0 for item in self.orderitem_set.all())
 
 
 class ShippingAddress(models.Model):
@@ -95,7 +100,10 @@ class ShippingAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, null=True)
 
     def __repr__(self):
-        return self.address
+        return self.address or f"ShippingAddress #{self.pk}"
+
+    def __str__(self):
+        return self.address or f"Shipping address #{self.pk}"
 
 
 class Card(models.Model):
@@ -105,4 +113,3 @@ class Card(models.Model):
     number = models.CharField(max_length=200, null=True)
     expiration_date = models.CharField(max_length=200, null=True)
     cvv = models.CharField(max_length=200, null=True)
-
