@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Карта MapLibre</title>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/maplibre-gl@6.3.0/dist/maplibre-gl.css"
+    />
+
+    <style>
+      html,
+      body,
+      #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script type="module">
+      import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.3.0/dist/maplibre-gl.mjs';
+
+      const coordinates = [37.618423, 55.751244];
+
+      const map = new maplibregl.Map({
+        container: 'map',
+        style: {
+          version: 8,
+          sources: {
+            osm: {
+              type: 'raster',
+              tiles: [
+                'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+              ],
+              tileSize: 256,
+              minzoom: 0,
+              maxzoom: 19,
+              attribution: '&copy; OpenStreetMap contributors'
+            }
+          },
+          layers: [
+            {
+              id: 'osm',
+              type: 'raster',
+              source: 'osm'
+            }
+          ]
+        },
+        center: [100, 61],
+        zoom: 1.5,
+        maxZoom: 19,
+        maplibreLogo: true
+      });
+
+      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+      map.once('load', () => {
+        map.fitBounds(
+          [
+            [19, 41],
+            [180, 82]
+          ],
+          { padding: 30 }
+        );
+      });
+
+      new maplibregl.Marker()
+        .setLngLat(coordinates)
+        .setPopup(new maplibregl.Popup().setText('Москва'))
+        .addTo(map)
+        .togglePopup();
+    </script>
+  </body>
+</html>
