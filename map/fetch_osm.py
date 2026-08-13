@@ -25,16 +25,6 @@ def build_statements():
     return "\n".join(lines)
 
 
-def build_address(tags):
-    street = (tags.get("addr:street") or "").strip()
-    house = (tags.get("addr:housenumber") or "").strip()
-    if street and house:
-        return f"{street}, {house}"
-    if street:
-        return street
-    return (tags.get("name") or "").strip()
-
-
 def main():
     q = QUERY.format(nwr=build_statements())
     r = requests.post(
@@ -67,19 +57,8 @@ def main():
 
         tags = el.get("tags") or {}
         name = (tags.get("name") or "").strip()
-        city = (tags.get("addr:city") or "").strip()
         phone = (tags.get("contact:phone") or "").strip()
-        address = build_address(tags)
-        points.append(
-            {
-                "id": len(points) + 1,
-                "region": city or name,
-                "address": address or phone or name,
-                "name": name,
-                "phone": phone,
-                "coordinates": [round(lon, 6), round(lat, 6)],
-            }
-        )
+        points.append([round(lon, 5), round(lat, 5), name, phone])
 
     js = "window.CDEK_POINTS = " + json.dumps(points, ensure_ascii=False) + ";\n"
     with open(OUT_JS, "w", encoding="utf-8") as f:

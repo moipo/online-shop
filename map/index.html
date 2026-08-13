@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Карта MapLibre</title>
 
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/maplibre-gl@6.3.0/dist/maplibre-gl.css"
-    />
+    <link rel="stylesheet" href="maplibre/maplibre-gl.css" />
 
     <style>
       html,
@@ -64,9 +61,14 @@
 
     <script src="points.js"></script>
     <script type="module">
-      import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.3.0/dist/maplibre-gl.mjs';
+      import * as maplibregl from './maplibre/maplibre-gl.mjs';
 
-      const points = window.CDEK_POINTS || [];
+      const points = (window.CDEK_POINTS || []).map(([lng, lat, name, phone], i) => ({
+        id: i + 1,
+        name: name || 'СДЭК',
+        phone: phone || '',
+        coordinates: [lng, lat]
+      }));
 
       const map = new maplibregl.Map({
         container: 'map',
@@ -119,7 +121,7 @@
       let selectedId = null;
 
       const labelFor = (point) =>
-        point.phone ? `${point.name} — ${point.phone}` : `${point.name} — ${point.address}`;
+        point.phone ? `${point.name} — ${point.phone}` : point.name;
 
       map.on('load', () => {
         map.addSource('cdek', {
