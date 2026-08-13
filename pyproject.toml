@@ -15,6 +15,7 @@ sqlparse = "0.4.3"
 asgiref = "3.5.2"
 requests = "2.28.1"
 psycopg2-binary = "2.9.5"
+openpyxl = "^3.1.5"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.13.2"
