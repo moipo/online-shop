@@ -71,3 +71,38 @@ class CardForm(forms.ModelForm):
             "expiration_date": forms.TextInput(attrs={"class": "form-control"}),
             "cvv": forms.TextInput(attrs={"class": "form-control"}),
         }
+
+
+class CheckoutForm(forms.Form):
+    name = forms.CharField(
+        max_length=150,
+        required=True,
+        label="Ваше имя",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Иван"}),
+    )
+    phone = forms.CharField(
+        max_length=20,
+        required=True,
+        label="Телефон",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "+7 900 000 00 00"}
+        ),
+    )
+    email = forms.EmailField(
+        max_length=254,
+        required=True,
+        label="Электронная почта",
+        widget=forms.EmailInput(
+            attrs={"class": "form-control", "placeholder": "example@email.com"}
+        ),
+    )
+    consent = forms.BooleanField(
+        required=True,
+        label="Я даю согласие на обработку персональных данных",
+        error_messages={
+            "required": "Необходимо согласие на обработку персональных данных."
+        },
+        widget=forms.CheckboxInput(attrs={"class": "custom-control-input"}),
+    )
+    pickup_lng = forms.CharField(required=True, widget=forms.HiddenInput())
+    pickup_lat = forms.CharField(required=True, widget=forms.HiddenInput())

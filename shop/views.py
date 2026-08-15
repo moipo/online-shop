@@ -2,13 +2,15 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.paginator import Paginator
-from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
-from .forms import CardForm, ShippingAddressForm, UserForm
+from .forms import CheckoutForm, UserForm
 from .models import Order, OrderItem, Product
 from .utils import get_cart, merge_visitor_and_user_carts
+from .yookassa import YooKassaError, create_payment
 
 
 PRICE_RANGES = {
@@ -38,30 +40,63 @@ def checkout(request):
         messages.info(request, "Your cart is empty.")
         return redirect("cart")
 
-    shipping_address_form = ShippingAddressForm(request.POST or None)
-    card_form = CardForm(request.POST or None)
+    initial = {}
+    if request.method == "GET":
+        initial = {
+            "name": request.user.first_name or "",
+            "email": request.user.email or "",
+        }
+
+    checkout_form = CheckoutForm(request.POST or None, initial=initial)
     if request.method == "POST":
-        if shipping_address_form.is_valid() and card_form.is_valid():
-            with transaction.atomic():
-                order = get_object_or_404(
-                    Order.objects.select_for_update(),
-                    pk=cart_order.pk,
-                    customer=request.user,
-                    status="Cart",
+        if checkout_form.is_valid():
+            data = checkout_form.cleaned_data
+            print("=== CHECKOUT ===")
+            print("Name:", data["name"])
+            print("Phone:", data["phone"])
+            print("Email:", data["email"])
+            print("Pickup point geocodes:", data["pickup_lng"], data["pickup_lat"])
+
+            total = cart_order.total_order_price
+            ctx = {"checkout_form": checkout_form, "total_order_price": total}
+            if total <= 0:
+                messages.error(request, "Невозможно оплатить заказ с нулевой суммой.")
+                return render(request, "checkout.html", ctx)
+
+            return_url = request.build_absolute_uri(reverse("index"))
+            metadata = {
+                "order_id": str(cart_order.pk),
+                "name": data["name"],
+                "phone": data["phone"],
+                "email": data["email"],
+                "pickup_lng": data["pickup_lng"],
+                "pickup_lat": data["pickup_lat"],
+            }
+            try:
+                payment_id, confirmation_url = create_payment(
+                    shop_id=settings.YOOKASSA_SHOP_ID,
+                    secret_key=settings.YOOKASSA_SECRET_KEY,
+                    amount=total,
+                    description=f"Заказ #{cart_order.pk}",
+                    return_url=return_url,
+                    metadata=metadata,
                 )
-                shipping_address = shipping_address_form.save(commit=False)
-                shipping_address.customer = request.user
-                shipping_address.order = order
-                shipping_address.save()
+            except YooKassaError as exc:
+                print("=== CHECKOUT PAYMENT ERROR ===")
+                print(exc)
+                messages.error(request, f"Ошибка при создании платежа: {exc}")
+                return render(request, "checkout.html", ctx)
 
-                order.status = "Pending"
-                order.save(update_fields=["status"])
-            return redirect("my_orders")
+            print("Payment id:", payment_id)
+            print("Confirmation url:", confirmation_url)
+            return redirect(confirmation_url)
 
-        messages.error(request, "All the fields must be filled")
+        messages.error(
+            request, "Заполните все поля, поставьте согласие и выберите пункт выдачи."
+        )
+
     ctx = {
-        "shipping_address_form": shipping_address_form,
-        "card_form": card_form,
+        "checkout_form": checkout_form,
         "total_order_price": cart_order.total_order_price,
     }
     return render(request, "checkout.html", ctx)
