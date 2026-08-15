@@ -89,6 +89,10 @@ def checkout(request):
 
             print("Payment id:", payment_id)
             print("Confirmation url:", confirmation_url)
+
+            cart_order.status = "Pending"
+            cart_order.save(update_fields=["status"])
+
             return redirect(confirmation_url)
 
         messages.error(

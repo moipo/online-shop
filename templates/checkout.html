@@ -45,6 +45,8 @@
 
                     {{ checkout_form.non_field_errors }}
 
+                    <div id="checkout-errors" class="alert alert-danger" style="display:none"></div>
+
                     <div class="form-group">
                         <label for="{{ checkout_form.name.id_for_label }}">{{ checkout_form.name.label }}</label>
                         {{ checkout_form.name }}
@@ -82,7 +84,8 @@
                     {{ checkout_form.pickup_lng }}
                     {{ checkout_form.pickup_lat }}
 
-                    <p class="font-weight-bold mt-3 mb-2">Выберите пункт выдачи на карте</p>
+                    <p class="font-weight-bold mt-3 mb-2">Пункт выдачи СДЭК</p>
+                    <div id="selected-summary" class="alert alert-success" style="display:none"></div>
                     <div id="pickup-map"></div>
                     <p id="selection-status" class="mt-2 mb-0"></p>
                 </form>
@@ -99,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <button id="pay-button" type="button" class="btn btn-block btn-primary font-weight-bold py-3">Перейти к оплате</button>
+            <button id="pay-button" type="button" class="btn btn-block btn-primary font-weight-bold py-3" disabled>Перейти к оплате</button>
         </div>
     </div>
 </div>
@@ -151,9 +154,15 @@
     });
 
     const status = document.querySelector('#selection-status');
-    const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
+    const summary = document.querySelector('#selected-summary');
+    const payButton = document.querySelector('#pay-button');
+    const errorsBox = document.querySelector('#checkout-errors');
     const pickupLngInput = document.querySelector('[name=pickup_lng]');
     const pickupLatInput = document.querySelector('[name=pickup_lat]');
+
+    const hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
+    const confirmPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
+
     let selectedPoint = null;
     let selectedId = null;
 
@@ -168,7 +177,60 @@
         selectedPoint = null;
         pickupLngInput.value = '';
         pickupLatInput.value = '';
-        status.textContent = `Нажмите на одну из ${points.length} точек на карте.`;
+        summary.style.display = 'none';
+        summary.textContent = '';
+        status.textContent = 'Выберите пункт выдачи СДЭК';
+        payButton.disabled = true;
+        confirmPopup.remove();
+    };
+
+    const confirmSelection = (point) => {
+        pickupLngInput.value = point.coordinates[0];
+        pickupLatInput.value = point.coordinates[1];
+        const text = `Выбран пункт выдачи: ${labelFor(point)}`;
+        summary.textContent = text;
+        summary.style.display = 'block';
+        status.textContent = text;
+        payButton.disabled = false;
+        confirmPopup.remove();
+    };
+
+    const openConfirmPopup = (point) => {
+        const container = document.createElement('div');
+        const info = document.createElement('div');
+        info.textContent = labelFor(point);
+        info.style.marginBottom = '8px';
+        info.style.fontWeight = '600';
+
+        const chooseButton = document.createElement('button');
+        chooseButton.type = 'button';
+        chooseButton.textContent = 'Выбрать пункт выдачи';
+        chooseButton.className = 'btn btn-primary btn-sm btn-block';
+        chooseButton.addEventListener('click', () => confirmSelection(point));
+
+        container.appendChild(info);
+        container.appendChild(chooseButton);
+
+        confirmPopup.setDOMContent(container).setLngLat(point.coordinates).addTo(map);
+    };
+
+    const validateCheckout = () => {
+        const errors = [];
+        const name = document.querySelector('[name=name]').value.trim();
+        const phone = document.querySelector('[name=phone]').value.trim();
+        const email = document.querySelector('[name=email]').value.trim();
+        const consent = document.querySelector('[name=consent]').checked;
+        const lng = pickupLngInput.value;
+        const lat = pickupLatInput.value;
+
+        if (!name) errors.push('Введите ваше имя.');
+        if (!phone) errors.push('Введите телефон.');
+        if (!email) errors.push('Введите электронную почту.');
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('Введите корректный email.');
+        if (!consent) errors.push('Необходимо согласие на обработку персональных данных.');
+        if (!lng || !lat) errors.push('Выберите пункт выдачи СДЭК.');
+
+        return errors;
     };
 
     map.on('load', () => {
@@ -197,13 +259,13 @@
             }
         });
 
-        status.textContent = `Нажмите на одну из ${points.length} точек на карте.`;
+        status.textContent = 'Выберите пункт выдачи СДЭК';
 
         map.on('click', 'cdek-points', (e) => {
             const feature = e.features[0];
             const point = feature.properties;
 
-            if (selectedId !== null) {
+            if (selectedId !== null && selectedId !== feature.id) {
                 map.setFeatureState({ source: 'cdek', id: selectedId }, { selected: false });
             }
 
@@ -211,19 +273,24 @@
             selectedPoint = point;
             map.setFeatureState({ source: 'cdek', id: selectedId }, { selected: true });
 
-            pickupLngInput.value = point.coordinates[0];
-            pickupLatInput.value = point.coordinates[1];
-            status.textContent = `Выбран ПВЗ: ${labelFor(point)}`;
+            pickupLngInput.value = '';
+            pickupLatInput.value = '';
+            summary.style.display = 'none';
+            summary.textContent = '';
+            payButton.disabled = true;
+
+            hoverPopup.remove();
+            openConfirmPopup(point);
         });
 
         map.on('mouseenter', 'cdek-points', (e) => {
             map.getCanvas().style.cursor = 'pointer';
-            popup.setLngLat(e.lngLat).setText(labelFor(e.features[0].properties)).addTo(map);
+            hoverPopup.setLngLat(e.lngLat).setText(labelFor(e.features[0].properties)).addTo(map);
         });
 
         map.on('mouseleave', 'cdek-points', () => {
             map.getCanvas().style.cursor = '';
-            popup.remove();
+            hoverPopup.remove();
         });
 
         map.on('click', (e) => {
@@ -234,11 +301,15 @@
         });
     });
 
-    document.querySelector('#pay-button').addEventListener('click', () => {
-        if (!selectedPoint) {
-            status.textContent = 'Сначала выберите пункт выдачи на карте.';
+    payButton.addEventListener('click', () => {
+        const errors = validateCheckout();
+        if (errors.length > 0) {
+            errorsBox.innerHTML = errors.map((msg) => `<div>• ${msg}</div>`).join('');
+            errorsBox.style.display = 'block';
+            errorsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
+        errorsBox.style.display = 'none';
         document.querySelector('#checkout-form').submit();
     });
 </script>
