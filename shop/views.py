@@ -91,7 +91,25 @@ def checkout(request):
             print("Confirmation url:", confirmation_url)
 
             cart_order.status = "Pending"
-            cart_order.save(update_fields=["status"])
+            cart_order.customer_name = data["name"]
+            cart_order.customer_phone = data["phone"]
+            cart_order.customer_email = data["email"]
+            cart_order.pickup_name = data["pickup_name"] or ""
+            cart_order.pickup_phone = data["pickup_phone"] or ""
+            cart_order.pickup_lng = float(data["pickup_lng"])
+            cart_order.pickup_lat = float(data["pickup_lat"])
+            cart_order.save(
+                update_fields=[
+                    "status",
+                    "customer_name",
+                    "customer_phone",
+                    "customer_email",
+                    "pickup_name",
+                    "pickup_phone",
+                    "pickup_lng",
+                    "pickup_lat",
+                ]
+            )
 
             return redirect(confirmation_url)
 

@@ -106,3 +106,5 @@ class CheckoutForm(forms.Form):
     )
     pickup_lng = forms.CharField(required=True, widget=forms.HiddenInput())
     pickup_lat = forms.CharField(required=True, widget=forms.HiddenInput())
+    pickup_name = forms.CharField(required=False, widget=forms.HiddenInput())
+    pickup_phone = forms.CharField(required=False, widget=forms.HiddenInput())

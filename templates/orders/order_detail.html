@@ -1,6 +1,17 @@
 {%extends "main.html"%}
 {%load static%}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'maplibre/maplibre-gl.css' %}" />
+<style>
+  #pickup-map-detail {
+    width: 100%;
+    height: 260px;
+    border-radius: 6px;
+  }
+</style>
+{% endblock %}
+
 {%block cart%}
 
 
@@ -190,8 +201,23 @@
                             <h5>Total price</h5>
                             <h5 class = "crt_total_price">${{order.total_order_price}}</h5>
                         </div>
-                        <!-- <a class="btn btn-block btn-primary font-weight-bold my-3 py-3 proceed_to_checkout" href = "{%url 'checkout'%}" >Proceed To Checkout</a> -->
                     </div>
+
+                    {% if order.pickup_lng and order.pickup_lat %}
+                    <div class="pt-2">
+                        <hr>
+                        <h6 class="font-weight-bold">Покупатель</h6>
+                        <p class="mb-1">{{ order.customer_name|default:"—" }}</p>
+                        <p class="mb-1">{{ order.customer_phone|default:"—" }}</p>
+                        <p class="mb-1">{{ order.customer_email|default:"—" }}</p>
+                        <hr>
+                        <h6 class="font-weight-bold">Пункт выдачи</h6>
+                        <p class="mb-1">
+                            {{ order.pickup_name|default:"СДЭК" }}{% if order.pickup_phone %} — {{ order.pickup_phone }}{% endif %}
+                        </p>
+                        <div id="pickup-map-detail"></div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -219,6 +245,65 @@
         <!-- Template Javascript -->
         <script src="{%static  'js/main.js'%}"></script>
 
+{% if order.pickup_lng and order.pickup_lat %}
+<script type="module">
+    import * as maplibregl from "{% static 'maplibre/maplibre-gl.mjs' %}";
 
+    const lng = {{ order.pickup_lng }};
+    const lat = {{ order.pickup_lat }};
+
+    const map = new maplibregl.Map({
+        container: 'pickup-map-detail',
+        style: {
+            version: 8,
+            sources: {
+                osm: {
+                    type: 'raster',
+                    tiles: [
+                        'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    ],
+                    tileSize: 256,
+                    minzoom: 0,
+                    maxzoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors'
+                }
+            },
+            layers: [
+                { id: 'osm', type: 'raster', source: 'osm' }
+            ]
+        },
+        center: [lng, lat],
+        zoom: 14,
+        maxZoom: 19,
+        maplibreLogo: true
+    });
+
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+    map.on('load', () => {
+        map.addSource('pickup', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: [lng, lat] }
+            }
+        });
+
+        map.addLayer({
+            id: 'pickup-point',
+            type: 'circle',
+            source: 'pickup',
+            paint: {
+                'circle-radius': 12,
+                'circle-color': '#dc2626',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff'
+            }
+        });
+    });
+</script>
+{% endif %}
 
 {%endblock%}

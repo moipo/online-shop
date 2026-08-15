@@ -83,6 +83,8 @@
 
                     {{ checkout_form.pickup_lng }}
                     {{ checkout_form.pickup_lat }}
+                    {{ checkout_form.pickup_name }}
+                    {{ checkout_form.pickup_phone }}
 
                     <p class="font-weight-bold mt-3 mb-2">Пункт выдачи СДЭК</p>
                     <div id="selected-summary" class="alert alert-success" style="display:none"></div>
@@ -159,6 +161,8 @@
     const errorsBox = document.querySelector('#checkout-errors');
     const pickupLngInput = document.querySelector('[name=pickup_lng]');
     const pickupLatInput = document.querySelector('[name=pickup_lat]');
+    const pickupNameInput = document.querySelector('[name=pickup_name]');
+    const pickupPhoneInput = document.querySelector('[name=pickup_phone]');
 
     const hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
     const confirmPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
@@ -177,6 +181,8 @@
         selectedPoint = null;
         pickupLngInput.value = '';
         pickupLatInput.value = '';
+        pickupNameInput.value = '';
+        pickupPhoneInput.value = '';
         summary.style.display = 'none';
         summary.textContent = '';
         status.textContent = 'Выберите пункт выдачи СДЭК';
@@ -187,6 +193,8 @@
     const confirmSelection = (point) => {
         pickupLngInput.value = point.coordinates[0];
         pickupLatInput.value = point.coordinates[1];
+        pickupNameInput.value = point.name || '';
+        pickupPhoneInput.value = point.phone || '';
         const text = `Выбран пункт выдачи: ${labelFor(point)}`;
         summary.textContent = text;
         summary.style.display = 'block';
@@ -275,6 +283,8 @@
 
             pickupLngInput.value = '';
             pickupLatInput.value = '';
+            pickupNameInput.value = '';
+            pickupPhoneInput.value = '';
             summary.style.display = 'none';
             summary.textContent = '';
             payButton.disabled = true;
