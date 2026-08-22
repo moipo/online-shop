@@ -1,0 +1,24 @@
+/* Mobile / responsive refinements for TechShop */
+
+/* Hero carousel: reduce height on small screens (overrides inline height) */
+@media (max-width: 767.98px) {
+    #header-carousel .carousel-item {
+        height: 250px !important;
+    }
+    #header-carousel .carousel-caption .display-4 {
+        font-size: 2rem;
+    }
+    #header-carousel .carousel-caption p {
+        display: none;
+    }
+}
+
+/* CDEK pickup maps: fit the screen on phones */
+@media (max-width: 767.98px) {
+    #pickup-map {
+        height: 300px !important;
+    }
+    #pickup-map-detail {
+        height: 220px !important;
+    }
+}
