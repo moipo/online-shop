@@ -22,3 +22,14 @@
         height: 220px !important;
     }
 }
+
+/* Mobile brand: shrink "TechShop" label so nav buttons fit */
+@media (max-width: 991.98px) {
+    .mobile-logo .h1 {
+        font-size: 1.44rem;
+    }
+    .mobile-logo .px-2 {
+        padding-left: 0.35rem !important;
+        padding-right: 0.35rem !important;
+    }
+}
