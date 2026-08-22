@@ -54,25 +54,26 @@
                 <div class="d-flex align-items-center order-lg-2 ml-auto">
                     <div class="navbar-nav flex-row align-items-center py-0">
                       {% if user.is_authenticated%}
-                      <a href = "{%url 'logout_view' %}"  class = "btn btn-primary mr-2" name="button">Log out</a>
+                      <a href = "{%url 'logout_view' %}"  class = "btn btn-primary btn-sm mr-2" name="button">Log out</a>
                       {%else%}
-                      <a href = "{%url 'login_view' %}" type="button" class = "btn btn-primary mr-2" name="button">Login</a>
+                      <a href = "{%url 'login_view' %}" type="button" class = "btn btn-primary btn-sm mr-2" name="button">Login</a>
                       {%endif%}
                         <!-- <a href="" class="btn px-0">
                             <i class="fas fa-heart text-primary"></i>
                             <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
                         </a> -->
-                        <a href="{% url 'cart'%}" class="btn px-0 ml-2">
+                        <a href="{% url 'cart'%}" class="btn btn-sm px-0 ml-2">
                             <i class="fas fa-shopping-cart text-primary"></i>
   <!--CH-->                    <h4 style = " margin-left: 2px; display:inline;"><span class="badge text-secondary border border-secondary rounded-circle total_amount" style="padding-bottom: 2px;"> {{crt_total_quantity}} </span></h4>
                         </a>
                     </div>
-                    <button type="button" class="navbar-toggler ml-2" data-toggle="collapse" data-target="#navbarCollapse">
+                    <button type="button" class="navbar-toggler ml-2" id="navDrawerToggle" aria-controls="navbarCollapse" aria-label="Open menu">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
 
-                <div class="collapse navbar-collapse order-lg-1" id="navbarCollapse">
+                <div class="navbar-collapse order-lg-1" id="navbarCollapse">
+                    <button type="button" class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
                     <div class="navbar-nav mr-auto py-0" style = "margin-left:12%;">
                         <a href="{% url 'index' %}" class="nav-item nav-link ">Home</a>
                         <a href="{% url 'shop' %}" class="nav-item nav-link">Shop</a>

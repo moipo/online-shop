@@ -23,13 +23,76 @@
     }
 }
 
-/* Mobile brand: shrink "TechShop" label so nav buttons fit */
+/* Mobile brand: moderate logo + uniform, compact top-bar controls */
 @media (max-width: 991.98px) {
     .mobile-logo .h1 {
-        font-size: 1.44rem;
+        font-size: 1.4rem;
     }
     .mobile-logo .px-2 {
         padding-left: 0.35rem !important;
         padding-right: 0.35rem !important;
+    }
+    .navbar .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+        font-size: 1rem;
+    }
+    .navbar.py-3 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Off-canvas side drawer (hamburger menu) */
+    #navbarCollapse {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 280px;
+        max-width: 80%;
+        background: rgba(61, 70, 77, 0.7);
+        z-index: 1050;
+        transform: translateX(100%);
+        transition: transform .3s ease;
+        overflow-y: auto;
+        padding: 1.5rem 1rem;
+        display: block !important;
+    }
+    #navbarCollapse.open {
+        transform: translateX(0);
+    }
+    #navbarCollapse .navbar-nav {
+        margin-left: 0 !important;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+    #navbarCollapse .nav-link {
+        font-size: 1.2rem;
+        padding: 0.85rem 0;
+    }
+    #navbarCollapse .nav-item.dropdown {
+        display: none;
+    }
+    .nav-drawer-close {
+        background: transparent;
+        border: 0;
+        color: #FFD333;
+        font-size: 1.75rem;
+        line-height: 1;
+        margin-left: auto;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        display: block;
+    }
+    .nav-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .5);
+        z-index: 1040;
+        display: none;
+    }
+    .nav-overlay.open {
+        display: block;
     }
 }
