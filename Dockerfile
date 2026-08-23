@@ -1,17 +1,15 @@
-FROM python:3.10
+FROM python:3.10-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONNUMBEFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR /usr/src/tech_shop
-COPY ./requirements.txt /usr/src/requirements.txt
+WORKDIR /app
 
-RUN pip install -r /usr/src/requirements.txt
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /usr/src/tech_shop
-
+COPY . .
 
 EXPOSE 8000
 
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"]
